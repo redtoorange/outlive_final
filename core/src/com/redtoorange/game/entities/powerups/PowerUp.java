@@ -3,6 +3,7 @@ package com.redtoorange.game.entities.powerups;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.redtoorange.game.components.physics.PhysicsComponent;
 import com.redtoorange.game.components.physics.PowerUpPhysicsComponent;
 import com.redtoorange.game.components.rendering.SpriteComponent;
 import com.redtoorange.game.engine.Engine;
@@ -25,7 +26,7 @@ public abstract class PowerUp extends Entity {
 	}
 
 	private void initPhysicsComponent( PhysicsSystem physicsSystem ) {
-		addComponent( new PowerUpPhysicsComponent( physicsSystem, this, getComponent( SpriteComponent.class ) ) );
+		addComponent( new PowerUpPhysicsComponent( physicsSystem, this, (SpriteComponent)getComponent( SpriteComponent.class ) ) );
 	}
 
 	private void initSpriteComponent( Vector2 position, Texture texture ) {

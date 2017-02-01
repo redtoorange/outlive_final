@@ -1,5 +1,6 @@
 package com.redtoorange.game.entities.characters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -42,6 +43,9 @@ public class Player extends EntityCharacter {
 		initInputComponent();
 		initPhysicsComponent();
 		initGunComponent(playScreen);
+
+		maxHealth  = 10;
+		health = 10;
 	}
 
 	public void update( float deltaTime ) {
@@ -50,6 +54,7 @@ public class Player extends EntityCharacter {
 
 	public void pickupAmmo( GunType type, int amount ) {
 		ammo.pickup( type, amount );
+		playScreen.getGunUI().setAmmoCount( ammo.remaining( type ) );
 	}
 
 	public void pickupHealth( int amount) {
@@ -65,8 +70,8 @@ public class Player extends EntityCharacter {
 
 	@Override
 	protected void die( ) {
+		Gdx.app.exit();
 		playScreen.setPlayer( null );
-		dispose( );
 	}
 
 	@Override

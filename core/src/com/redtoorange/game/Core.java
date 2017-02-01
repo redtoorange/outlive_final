@@ -15,6 +15,12 @@ import com.redtoorange.game.screens.PlayScreen;
 public class Core extends Game {
 	private FPSLogger logger = new FPSLogger( );
 	private PlayScreen playScreen;
+	private boolean playing = true;
+
+	public Core( boolean debugging ) {
+		super( );
+		Global.DEBUG = debugging;
+	}
 
 	@Override
 	public void create( ) {
@@ -44,9 +50,13 @@ public class Core extends Game {
 		if ( Global.DEBUG )
 			logger.log( );
 
-		update( );
+		if(playing)
+			update( );
+		if(playing)
+			draw( );
 
-		draw( );
+		if(!playing)
+			dispose();
 	}
 
 	public void update( ) {
@@ -60,10 +70,19 @@ public class Core extends Game {
 
 	@Override
 	public void dispose( ) {
+		if ( screen != null ) {
+			screen.dispose( );
+			screen = null;
+		}
+
 		if ( Global.DEBUG )
 			System.out.println( "Core disposed" );
 
-		if ( screen != null )
-			screen.dispose( );
+		Gdx.input.setCursorCatched( false );
+		Gdx.app.exit();
+	}
+
+	public void setPlaying(boolean playing){
+		this.playing = playing;
 	}
 }

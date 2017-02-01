@@ -3,6 +3,7 @@ package com.redtoorange.game.entities;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
 import com.redtoorange.game.components.TransformComponent;
 import com.redtoorange.game.engine.Engine;
@@ -66,12 +67,15 @@ public abstract class Entity implements Disposable {
 
 	@Override
 	public void dispose( ) {
-		if ( engine != null )
+		if(engine != null)
 			engine.removeEntity( this );
 
 		for ( Component c : components )
 			c.dispose( );
 
 		components.clear( );
+
+		if( Global.DEBUG)
+			System.out.println( this.getClass().getSimpleName() + " disposed" );
 	}
 }

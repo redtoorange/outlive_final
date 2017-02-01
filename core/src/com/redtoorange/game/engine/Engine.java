@@ -77,10 +77,19 @@ public class Engine implements Disposable {
 	}
 
 	public void dispose( ) {
-		for ( Entity e : entities ) {
-			if ( e != null )
-				e.dispose( );
+		renderingSystem.dispose();
+		entityListeners.clear();
+
+		for(int i = entities.size-1; i >= 0; i--){
+			if(entities.get( i ) != null) {
+				entities.get( i ).dispose( );
+			}
 		}
+
+		entities.clear();
+
+		if(Global.DEBUG)
+			System.out.println( "Engine disposed" );
 	}
 
 	private void entityAdded( Entity e){

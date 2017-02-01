@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.components.rendering.MapRenderComponent;
 import com.redtoorange.game.engine.Engine;
 
@@ -35,6 +36,7 @@ public class GameMap extends Entity {
 	public Array<Rectangle> playerSpawns = new Array<Rectangle>( );
 	private TiledMap map;
 	private float mapScale = 1f;
+	private MapRenderComponent mapRenderer;
 
 	/**
 	 * Build a GameMap that will encapsulate a Tiled TMX Map.  Scaling is handled automatically.  Two Arrays will be
@@ -51,7 +53,7 @@ public class GameMap extends Entity {
 		TmxMapLoader mapLoader = new TmxMapLoader( new InternalFileHandleResolver( ) );
 		map = mapLoader.load( mapPath );
 
-		addComponent( new MapRenderComponent( this, map, mapScale, batch, camera ) );
+		mapRenderer =  new MapRenderComponent( this, map, mapScale, batch, camera ) ;
 
 		buildWalls( );
 		buildPlayerSpawns( );
@@ -61,6 +63,8 @@ public class GameMap extends Entity {
 	public void dispose( ) {
 		if ( map != null )
 			map.dispose( );
+
+		mapRenderer.dispose();
 
 		super.dispose( );
 	}
@@ -93,5 +97,9 @@ public class GameMap extends Entity {
 
 			destination.add( rectangle );
 		}
+	}
+
+	public void draw( SpriteBatch batch ){
+		mapRenderer.draw( batch );
 	}
 }

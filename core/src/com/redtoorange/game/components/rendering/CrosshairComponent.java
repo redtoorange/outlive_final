@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
 import com.redtoorange.game.components.input.PlayerInputComponent;
 import com.redtoorange.game.engine.PostLightingDraw;
@@ -45,6 +46,7 @@ public class CrosshairComponent extends Component implements Updateable, PostLig
 
 	@Override
 	public void dispose() {
-
+		if( Global.DEBUG)
+			System.out.println( this.getClass().getSimpleName() + " disposed" );
 	}
 }

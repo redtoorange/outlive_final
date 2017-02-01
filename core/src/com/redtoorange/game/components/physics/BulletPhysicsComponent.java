@@ -42,11 +42,6 @@ public class BulletPhysicsComponent extends PhysicsComponent implements Updateab
 		body.getFixtureList( ).first( ).setFilterData( f );
 	}
 
-	@Override
-	public void dispose( ) {
-		destroy( );
-	}
-
 	public void kill( ) {
 		physicsSystem.destroyBody( body );
 		body = null;

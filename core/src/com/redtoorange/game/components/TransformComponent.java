@@ -1,6 +1,7 @@
 package com.redtoorange.game.components;
 
 import com.badlogic.gdx.math.Vector2;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.entities.Entity;
 
 /**
@@ -37,5 +38,8 @@ public class TransformComponent extends Component {
 	@Override
 	public void dispose() {
 		position = null;
+
+		if( Global.DEBUG)
+			System.out.println( this.getClass().getSimpleName() + " disposed" );
 	}
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.engine.Updateable;
 import com.redtoorange.game.entities.Entity;
 
@@ -75,9 +76,12 @@ public class PhysicsSystem extends System implements Updateable, Disposable {
 	 * Helper function to prevent hanging bodies inputComponent the world.
 	 */
 	private void destroyBodies( ) {
+		Array<Body> bodies = new Array<Body>(  );
+		world.getBodies( bodies );
+
 		cullBodies = false;
 		for ( int i = deadBodies.size - 1; i >= 0; i-- ) {
-			if ( deadBodies.get( i ) != null )
+			if ( deadBodies.get( i ) != null && bodies.contains( deadBodies.get( i ), true ) )
 				world.destroyBody( deadBodies.get( i ) );
 
 			deadBodies.removeIndex( i );
@@ -129,8 +133,12 @@ public class PhysicsSystem extends System implements Updateable, Disposable {
 	public void dispose( ) {
 		if ( world != null )
 			world.dispose( );
+
 		if ( rayHandler != null )
 			rayHandler.dispose( );
+
+		if( Global.DEBUG)
+			java.lang.System.out.println( "Physics system disposed" );
 	}
 
 	public RayHandler getRayHandler( ) {

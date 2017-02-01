@@ -37,14 +37,14 @@ public class Global {
 	/**
 	 * Should the game run inputComponent Debug mode.  Provides additional output and physics debug information.
 	 */
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
 	public static int WINDOW_WIDTH = 1920;
 	public static int WINDOW_HEIGHT = 1080;
 	public static String WINDOW_TITLE = "Some cool game thing";
 
-	public static float VIRTUAL_WIDTH = 12f;
-	public static float VIRTUAL_HEIGHT = 10;
+	public static float VIRTUAL_WIDTH = 16f;
+	public static float VIRTUAL_HEIGHT = 14f;
 
 	public static short BULLET_COL_GROUP = -1;
 

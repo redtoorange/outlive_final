@@ -32,9 +32,4 @@ public class PowerUpPhysicsComponent extends PhysicsComponent {
 
 		body.setTransform( sc.getCenter( ), ( float ) Math.toRadians( sc.getRotation( ) ) );
 	}
-
-	@Override
-	public void dispose( ) {
-		destroy( );
-	}
 }

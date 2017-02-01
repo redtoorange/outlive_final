@@ -2,6 +2,7 @@ package com.redtoorange.game.components.physics;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
 import com.redtoorange.game.entities.Entity;
 import com.redtoorange.game.systems.PhysicsSystem;
@@ -48,5 +49,13 @@ public abstract class PhysicsComponent extends Component {
 			physicsSystem.destroyBody( body );
 			body = null;
 		}
+	}
+
+	@Override
+	public void dispose( ) {
+		destroy();
+
+		if( Global.DEBUG)
+			System.out.println( this.getClass().getSimpleName() + " disposed" );
 	}
 }

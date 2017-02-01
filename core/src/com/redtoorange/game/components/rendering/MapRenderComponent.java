@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.entities.GameMap;
 
 /**
@@ -32,6 +33,7 @@ public class MapRenderComponent extends RenderComponent {
 
 	@Override
 	public void dispose( ) {
-		//Nothing to dispose here
+		if( Global.DEBUG)
+			System.out.println( this.getClass().getSimpleName() + " disposed" );
 	}
 }

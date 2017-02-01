@@ -9,7 +9,7 @@ import com.redtoorange.game.systems.PhysicsSystem;
 public abstract class EntityCharacter extends Entity {
 	protected PhysicsSystem physicsSystem;
 
-	protected int maxHealth = 10;
+	protected int maxHealth = 1;
 	protected int health = maxHealth;
 
 	public EntityCharacter( Vector2 position, Engine engine, PhysicsSystem physicsSystem ) {

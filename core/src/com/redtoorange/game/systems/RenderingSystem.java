@@ -5,6 +5,7 @@ package com.redtoorange.game.systems;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
 import com.redtoorange.game.engine.Drawable;
 import com.redtoorange.game.engine.PostLightingDraw;
@@ -54,5 +55,13 @@ public class RenderingSystem extends System {
 	public void postLightingRender( SpriteBatch batch ){
 		for(PostLightingDraw d : postLightingDraws)
 			d.postLightingDraw( batch );
+	}
+
+	public void dispose(){
+		drawables.clear();
+		postLightingDraws.clear();
+
+		if( Global.DEBUG)
+			java.lang.System.out.println( "Rendering System Disposed" );
 	}
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.redtoorange.game.Global;
 import com.redtoorange.game.entities.Entity;
 
 /**
@@ -117,6 +118,7 @@ public class SpriteComponent extends RenderComponent {
 
 	@Override
 	public void dispose( ) {
-		//Nothing to dispose here
+		if( Global.DEBUG)
+			System.out.println( this.getClass().getSimpleName() + " disposed" );
 	}
 }

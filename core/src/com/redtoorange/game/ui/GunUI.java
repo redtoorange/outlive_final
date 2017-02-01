@@ -1,10 +1,11 @@
-package com.redtoorange.game.systems.ui;
+package com.redtoorange.game.ui;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -26,6 +27,7 @@ public class GunUI extends System {
 	private Table rootTable;
 	private Stage uiStage;
 	private Image currentImage;
+	private Label ammoLabel;
 	private TextureRegionDrawable regionDrawable = new TextureRegionDrawable( );
 
 	public GunUI( ) {
@@ -50,7 +52,9 @@ public class GunUI extends System {
 		uiStage.addActor( rootTable );
 		rootTable.setFillParent( true );
 
-		rootTable.add( "Ammo Count or Something" ).right( ).bottom( ).size( 100f, 100f ).expand( );
+		ammoLabel = new Label( "0",  VisUI.getSkin( ));
+		ammoLabel.setSize( 100f, 100f );
+		rootTable.add( ammoLabel ).right( ).bottom( ).size( 100f, 100f ).expand( );
 		currentImage = new Image( regionDrawable );
 		rootTable.add( currentImage ).bottom( ).right( ).size( 200, 200 );
 	}
@@ -62,6 +66,10 @@ public class GunUI extends System {
 
 	public void swapCurrentImage( TextureRegion region ) {
 		regionDrawable.setRegion( region );
+	}
+
+	public void setAmmoCount( int count ){
+		ammoLabel.setText( Integer.toString( count ) );
 	}
 
 	@Override

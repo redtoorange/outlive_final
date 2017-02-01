@@ -64,9 +64,4 @@ public abstract class CharacterPhysicsComponent extends PhysicsComponent impleme
 		body.setAngularDamping( angularDampening );
 		body.setSleepingAllowed( false );
 	}
-
-	@Override
-	public void dispose( ) {
-		destroy( );
-	}
 }

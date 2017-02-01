@@ -147,23 +147,27 @@ public class PlayerGunComponent extends Component implements Updateable, Drawabl
 	}
 
 	private void reload( ) {
-		if ( bulletsInGun > 0 ) {
-			playerInventory.pickup( type, bulletsInGun );
-		}
-		int bullets = Math.min( maxBulletsInGun, playerInventory.remaining( type ) );
-		playerInventory.consume( type, bullets );
-		bulletsInGun = bullets;
+		if(playerInventory.remaining( type ) > 0){
+			if ( bulletsInGun > 0 ) {
+				playerInventory.pickup( type, bulletsInGun );
+			}
+			int bullets = Math.min( maxBulletsInGun, playerInventory.remaining( type ) );
+			playerInventory.consume( type, bullets );
+			bulletsInGun = bullets;
 
-		playScreen.getGunUI( ).swapCurrentImage( bulletTextures[ bulletsInGun ] );
+			playScreen.getGunUI( ).swapCurrentImage( bulletTextures[ bulletsInGun ] );
 
-		if ( bulletsInGun > 0 ) {
-			SoundEffect se = gsm.getSoundEffect( "reloaded" );
+			if ( bulletsInGun > 0 ) {
+				SoundEffect se = gsm.getSoundEffect( "reloaded" );
 
-			if ( !se.isPlaying( ) )
-				gsm.playSound( "reloaded" );
+				if ( !se.isPlaying( ) )
+					gsm.playSound( "reloaded" );
 
-			needsReload = false;
-			reloading = true;
+				needsReload = false;
+				reloading = true;
+			}
+
+			playScreen.getGunUI().setAmmoCount( playerInventory.remaining( type ) );
 		}
 	}
 
@@ -213,9 +217,10 @@ public class PlayerGunComponent extends Component implements Updateable, Drawabl
 		for ( TextureRegion t : bulletTextures ) {
 			t.getTexture( ).dispose( );
 		}
-		if ( Global.DEBUG )
-			System.out.println( "GunComponent disposed" );
 
 		bulletTexture.dispose( );
+
+		if( Global.DEBUG)
+			System.out.println( this.getClass().getSimpleName() + " disposed" );
 	}
 }

@@ -21,7 +21,6 @@ import com.redtoorange.game.ContactManager;
 import com.redtoorange.game.Core;
 import com.redtoorange.game.Global;
 import com.redtoorange.game.PerformanceCounter;
-import com.redtoorange.game.components.rendering.MapRenderComponent;
 import com.redtoorange.game.components.rendering.SpriteComponent;
 import com.redtoorange.game.engine.Engine;
 import com.redtoorange.game.entities.GameMap;
@@ -31,7 +30,7 @@ import com.redtoorange.game.entities.powerups.Ammo;
 import com.redtoorange.game.entities.powerups.Health;
 import com.redtoorange.game.factories.Box2DFactory;
 import com.redtoorange.game.systems.PhysicsSystem;
-import com.redtoorange.game.systems.ui.GunUI;
+import com.redtoorange.game.ui.GunUI;
 
 /**
  * PlayScreen.java - Primary playing screen that the user will interact with.
@@ -57,13 +56,17 @@ public class PlayScreen extends ScreenAdapter {
 	private Engine engine;
 	private PhysicsSystem physicsSystem;
 	private GunUI gunui;
+
 	private ConeLight flashLight;
 	private PointLight playerLight;
 	private PointLight houseLight;
+
 	private PerformanceCounter updateCounter = new PerformanceCounter( "Update:" );
 	private Color minColor = new Color( 1, .5f, .5f, .25f );
 	private Color maxColor = new Color( 1, .5f, .5f, .75f );
 	private PerformanceCounter drawCounter = new PerformanceCounter( "Draw:" );
+	boolean running = true;
+
 	public PlayScreen( Core core ) {
 		this.core = core;
 	}
@@ -144,6 +147,9 @@ public class PlayScreen extends ScreenAdapter {
 	 * @param deltaTime
 	 */
 	public void update( float deltaTime ) {
+		if ( !running )
+			return;
+
 		updateCounter.start( );
 		physicsSystem.update( deltaTime );
 
@@ -153,29 +159,34 @@ public class PlayScreen extends ScreenAdapter {
 
 		updateCameraPosition( );
 
-		Color c = houseLight.getColor( );
-		if ( fading ) {
-			c.lerp( minColor, deltaTime * ( MathUtils.random( 2, 7 ) ) );
-			if ( c.a <= 0.3f )
-				fading = false;
-		} else {
-			c.lerp( maxColor, deltaTime * ( MathUtils.random( 2, 7 ) ) );
-			if ( c.a >= .7f )
-				fading = true;
-		}
-		houseLight.setColor( c );
+//		Color c = houseLight.getColor( );
+//		if ( fading ) {
+//			c.lerp( minColor, deltaTime * ( MathUtils.random( 2, 7 ) ) );
+//			if ( c.a <= 0.3f )
+//				fading = false;
+//		} else {
+//			c.lerp( maxColor, deltaTime * ( MathUtils.random( 2, 7 ) ) );
+//			if ( c.a >= .7f )
+//				fading = true;
+//		}
+//		houseLight.setColor( c );
 		//System.out.println( updateCounter );
+
+
 	}
 
 	/**
 	 *
 	 */
 	public void draw( ) {
+		if ( !running )
+			return;
+
 		drawCounter.start( );
 
 		camera.update( );
 
-		((MapRenderComponent)gameMap.getComponent( MapRenderComponent.class )).draw( batch );
+		gameMap.draw( batch );
 
 		batch.setProjectionMatrix( camera.combined );
 		batch.begin( );
@@ -198,20 +209,23 @@ public class PlayScreen extends ScreenAdapter {
 	}
 
 	private void renderLighting( ) {
-		if(player != null ){
-			Vector2 flashlightPoisition = ((SpriteComponent)player.getComponent( SpriteComponent.class )).getCenter( );
+		if ( !running )
+			return;
+
+		if ( player != null && flashLight != null && playerLight != null ) {
+			Vector2 flashlightPoisition = ( ( SpriteComponent ) player.getComponent( SpriteComponent.class ) ).getCenter( );
 			flashlightPoisition.add( new Vector2( -0.2f, 0.3f ).rotate( player.getRotation( ) ) );
 
 			flashLight.setDirection( player.getRotation( ) );
 			flashLight.setPosition( flashlightPoisition );
-			playerLight.setPosition( player.getTransform().getPosition( ) );
-		}
+			playerLight.setPosition( player.getTransform( ).getPosition( ) );
 
-		physicsSystem.render( camera );
+			physicsSystem.render( camera );
+		}
 	}
 
 	private void updateCameraPosition( ) {
-		if(player != null)
+		if ( player != null )
 			camera.position.lerp( player.getPosition3D( ), cameraSmoothing );
 	}
 
@@ -224,30 +238,41 @@ public class PlayScreen extends ScreenAdapter {
 
 	@Override
 	public void dispose( ) {
+		if ( engine != null ) {
+			engine.dispose( );
+			engine = null;
+		}
+
+		if ( physicsSystem != null ) {
+			flashLight = null;
+			houseLight = null;
+			playerLight = null;
+			physicsSystem.dispose( );
+			physicsSystem = null;
+		}
+
+		if ( gameMap != null ) {
+			gameMap.dispose( );
+			gameMap = null;
+		}
+
+		if ( batch != null ) {
+			batch.dispose( );
+			batch = null;
+		}
+
 		if ( Global.DEBUG )
 			System.out.println( "PlayScreen disposed" );
-
-		Gdx.input.setCursorCatched( false );
-
-		if ( gameMap != null )
-			gameMap.dispose( );
-
-		if ( batch != null )
-			batch.dispose( );
-
-		if ( player != null )
-			player.dispose( );
-
-		if ( physicsSystem != null )
-			physicsSystem.dispose( );
-
-		if ( engine != null )
-			engine.dispose( );
 	}
 
-	public void setPlayer( Player player ){
+	public void setPlayer( Player player ) {
 		this.player = player;
+		if ( player == null ) {
+			running = false;
+			core.setPlaying( false );
+		}
 	}
+
 	public GunUI getGunUI( ) {
 		return gunui;
 	}
