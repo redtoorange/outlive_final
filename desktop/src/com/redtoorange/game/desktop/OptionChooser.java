@@ -37,13 +37,12 @@ public class OptionChooser {
 
 	public OptionChooser(){
 		frame = new JFrame( "Option Chooser" );
+
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
 		panel = new JPanel(  );
 		panel.setLayout( new BoxLayout( panel, BoxLayout.Y_AXIS ) );
 		frame.add( panel );
-
-
 
 		fullscreenPanel( );
 		debugPanel( );
@@ -57,6 +56,9 @@ public class OptionChooser {
 		height = screenSize.getHeight();
 
 		frame.pack();
+		frame.setLocation(
+				((int)width - frame.getWidth()) / 2,
+				((int)height - frame.getHeight()) / 2 );
 		frame.setVisible( true );
 	}
 
