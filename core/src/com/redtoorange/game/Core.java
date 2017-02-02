@@ -20,10 +20,12 @@ public class Core extends Game {
 	public Core( boolean debugging ) {
 		super( );
 		Global.DEBUG = debugging;
+
 	}
 
 	@Override
 	public void create( ) {
+
 		playScreen = new PlayScreen( this );
 		setScreen( playScreen );
 	}

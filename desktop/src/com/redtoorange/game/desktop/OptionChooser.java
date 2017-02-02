@@ -1,8 +1,7 @@
 package com.redtoorange.game.desktop;
 
-import oracle.jrockit.jfr.JFR;
-
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,6 +26,11 @@ public class OptionChooser {
 	private JCheckBox debugCheck;
 
 
+
+	private double width;
+	private double height;
+
+
 	public static void main( String[] args ) {
 		new OptionChooser();
 	}
@@ -39,6 +43,24 @@ public class OptionChooser {
 		panel.setLayout( new BoxLayout( panel, BoxLayout.Y_AXIS ) );
 		frame.add( panel );
 
+
+
+		fullscreenPanel( );
+		debugPanel( );
+
+		launchGame = new JButton( "Launch Game" );
+		launchGame.addActionListener( new LaunchListener() );
+		panel.add( launchGame );
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		width = screenSize.getWidth();
+		height = screenSize.getHeight();
+
+		frame.pack();
+		frame.setVisible( true );
+	}
+
+	private void fullscreenPanel() {
 		fullScreenPanel = new JPanel(  );
 		fullScreenPanel.setLayout( new BoxLayout( fullScreenPanel, BoxLayout.X_AXIS ) );
 		panel.add( fullScreenPanel );
@@ -48,7 +70,9 @@ public class OptionChooser {
 
 		fullScreen = new JCheckBox(  );
 		fullScreenPanel.add( fullScreen );
+	}
 
+	private void debugPanel() {
 		debugPanel = new JPanel(  );
 		debugPanel.setLayout( new BoxLayout( debugPanel, BoxLayout.X_AXIS ) );
 		panel.add( debugPanel );
@@ -58,20 +82,13 @@ public class OptionChooser {
 
 		debugCheck = new JCheckBox(  );
 		debugPanel.add( debugCheck );
-
-		launchGame = new JButton( "Launch Game" );
-		launchGame.addActionListener( new LaunchListener() );
-		panel.add( launchGame );
-
-		frame.pack();
-		frame.setVisible( true );
 	}
 
 	private class LaunchListener implements ActionListener{
 		@Override
 		public void actionPerformed( ActionEvent e ) {
 			frame.setVisible( false );
-			new DesktopLauncher( fullScreen.isSelected(), debugCheck.isSelected() );
+			new DesktopLauncher( fullScreen.isSelected(), debugCheck.isSelected(), width, height );
 			//frame.dispose();
 		}
 	}
