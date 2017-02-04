@@ -4,6 +4,8 @@ import box2dLight.ConeLight;
 import box2dLight.Light;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -81,6 +83,7 @@ public class PlayScreen extends ScreenAdapter {
 
 		Gdx.input.setCursorCatched( true );
 		Gdx.input.setCursorPosition( Global.WINDOW_WIDTH / 2, Global.WINDOW_HEIGHT / 2 );
+		Gdx.input.setInputProcessor( new mouseProcessor() );
 
 		debugRenderer = new Box2DDebugRenderer( );
 		contactManager = new ContactManager( );
@@ -275,5 +278,65 @@ public class PlayScreen extends ScreenAdapter {
 
 	public GunUI getGunUI( ) {
 		return gunui;
+	}
+
+	private void mouseWheelMovement( int amount ){
+
+		if(amount != 0)
+			changeZoom(amount);
+	}
+
+	private void changeZoom( float amount ){
+		float w = viewport.getWorldWidth();
+		float h = viewport.getWorldHeight();
+
+		w -= amount;
+		h -= amount;
+
+		viewport.setWorldWidth( w );
+		viewport.setWorldHeight( h );
+	}
+
+	private class mouseProcessor implements InputProcessor{
+		@Override
+		public boolean keyDown( int keycode ) {
+			return false;
+		}
+
+		@Override
+		public boolean keyUp( int keycode ) {
+			return false;
+		}
+
+		@Override
+		public boolean keyTyped( char character ) {
+			return false;
+		}
+
+		@Override
+		public boolean touchDown( int screenX, int screenY, int pointer, int button ) {
+			return false;
+		}
+
+		@Override
+		public boolean touchUp( int screenX, int screenY, int pointer, int button ) {
+			return false;
+		}
+
+		@Override
+		public boolean touchDragged( int screenX, int screenY, int pointer ) {
+			return false;
+		}
+
+		@Override
+		public boolean mouseMoved( int screenX, int screenY ) {
+			return false;
+		}
+
+		@Override
+		public boolean scrolled( int amount ) {
+			mouseWheelMovement( amount );
+			return true;
+		}
 	}
 }

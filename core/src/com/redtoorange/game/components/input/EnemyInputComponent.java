@@ -47,8 +47,11 @@ public class EnemyInputComponent extends InputComponent{
 		rotateToFacePlayer();
 		calculateDeltaInput();
 
-		if( !withinRange() )
+
+		if( !withinRange() ) {
+			resetRoamingTimes();
 			currentState = State.ROAMING;
+		}
 	}
 
 	float roamDirection = MathUtils.random( 0f, 359f );
@@ -63,14 +66,18 @@ public class EnemyInputComponent extends InputComponent{
 			stopMovement();
 		}
 		else if(roamingTime <= 0 && roamingDelay <= 0){
-			roamingTime = MathUtils.random( 1f, 2f );
-			roamingDelay = MathUtils.random( 0.25f, 1f );
-			roamDirection = MathUtils.random( 0f, 359f );
+			resetRoamingTimes( );
 			applyDirection();
 		}
 
 		if( withinRange() )
 			currentState = State.CHASING;
+	}
+
+	private void resetRoamingTimes( ) {
+		roamingTime = MathUtils.random( 1f, 2f );
+		roamingDelay = MathUtils.random( 0.25f, 1f );
+		roamDirection = MathUtils.random( 0f, 359f );
 	}
 
 	private boolean withinRange( ) {

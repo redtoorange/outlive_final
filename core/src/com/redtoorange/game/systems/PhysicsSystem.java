@@ -29,7 +29,7 @@ public class PhysicsSystem extends System implements Updateable, Disposable {
 	private Array<BodyDef> newBodies = new Array<BodyDef>( );
 	private RayHandler rayHandler;
 
-	private Color ambientLight = new Color( 0.05f, 0.05f, 0.05f, 0.05f );
+	private Color ambientLight = new Color( 0.1f, 0.1f, 0.1f, 0.1f );
 
 	/**
 	 * Create a new Box2D World with no gravity.

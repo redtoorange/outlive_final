@@ -75,7 +75,7 @@ public class Enemy extends EntityCharacter {
 
 	@Override
 	protected void initInputComponent() {
-		addComponent(  new EnemyInputComponent( this, 2.5f ) );
+		addComponent(  new EnemyInputComponent( this, 5f ) );
 	}
 
 	@Override
