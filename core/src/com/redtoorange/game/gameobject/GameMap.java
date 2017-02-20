@@ -1,4 +1,4 @@
-package com.redtoorange.game.entities;
+package com.redtoorange.game.gameobject;
 
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,9 +9,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.redtoorange.game.Global;
-import com.redtoorange.game.components.rendering.MapRenderComponent;
-import com.redtoorange.game.engine.Engine;
+import com.redtoorange.game.components.rendering.sprite.MapRenderComponent;
 
 
 //TODO: Detect and populate player spawn points
@@ -25,7 +23,7 @@ import com.redtoorange.game.engine.Engine;
  * @author - Andrew M.
  * @version - 13/Jan/2017
  */
-public class GameMap extends Entity {
+public class GameMap extends GameObject {
 	/**
 	 * Parsed from the TMX map and scale by the map scale.  "walls" must be the layer name.
 	 */
@@ -46,14 +44,14 @@ public class GameMap extends Entity {
 	 * @param batch    The SpriteBatch to embed into the MapRenderer.
 	 * @param mapScale The amount to resize the entire map by.  1/16f if you want 16 map pixels to equal 1 game unit.
 	 */
-	public GameMap( String mapPath, Engine engine, SpriteBatch batch, OrthographicCamera camera, float mapScale ) {
-		super( new Vector2( 0, 0 ), engine );
+	public GameMap( GameObject parent, String mapPath, SpriteBatch batch, OrthographicCamera camera, float mapScale ) {
+		super( parent, new Vector2( 0, 0 ) );
 		this.mapScale = mapScale;
 
 		TmxMapLoader mapLoader = new TmxMapLoader( new InternalFileHandleResolver( ) );
 		map = mapLoader.load( mapPath );
 
-		mapRenderer =  new MapRenderComponent( this, map, mapScale, batch, camera ) ;
+		mapRenderer =  new MapRenderComponent( map, mapScale, batch, camera ) ;
 
 		buildWalls( );
 		buildPlayerSpawns( );

@@ -2,7 +2,7 @@ package com.redtoorange.game.components;
 
 import com.badlogic.gdx.math.Vector2;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.gameobject.GameObject;
 
 /**
  * TransformComponent.java - DESCRIPTION
@@ -13,13 +13,11 @@ import com.redtoorange.game.entities.Entity;
 public class TransformComponent extends Component {
 	private Vector2 position;
 
-	public TransformComponent( Entity parent ) {
-		super( parent );
+	public TransformComponent( GameObject parent ) {
 		position = new Vector2( 0,0 );
 	}
 
-	public TransformComponent( Entity parent, Vector2 position ) {
-		super( parent );
+	public TransformComponent( GameObject parent, Vector2 position ) {
 		this.position = new Vector2( position );
 	}
 

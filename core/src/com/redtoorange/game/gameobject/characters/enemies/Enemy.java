@@ -1,33 +1,37 @@
-package com.redtoorange.game.entities.characters.enemies;
+package com.redtoorange.game.gameobject.characters.enemies;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.redtoorange.game.components.input.EnemyInputComponent;
 import com.redtoorange.game.components.physics.character.EnemyPhysicsComponent;
-import com.redtoorange.game.components.rendering.SpriteComponent;
-import com.redtoorange.game.engine.Engine;
-import com.redtoorange.game.entities.characters.EntityCharacter;
-import com.redtoorange.game.entities.characters.Player;
+import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
+import com.redtoorange.game.gameobject.GameObject;
+import com.redtoorange.game.gameobject.characters.GameObjectCharacter;
+import com.redtoorange.game.gameobject.characters.Player;
 import com.redtoorange.game.systems.PhysicsSystem;
 
-public class Enemy extends EntityCharacter {
+public class Enemy extends GameObjectCharacter {
 	protected Player player;
 	private SpriteComponent spriteComponent;
 	private int damage = 5;
 
-	public Enemy( PhysicsSystem physicsSystem, Engine engine, Vector2 spawnPosition, Player player ) {
-		this( physicsSystem, engine, spawnPosition );
-
+	public Enemy( GameObject parent, PhysicsSystem physicsSystem, Vector2 spawnPosition, Player player ) {
+		this( parent, physicsSystem, spawnPosition );
 		this.player = player;
 	}
 
-	public Enemy( PhysicsSystem physicsSystem, Engine engine, Vector2 spawnPosition ) {
-		super( spawnPosition, engine, physicsSystem );
+	public Enemy( GameObject parent, PhysicsSystem physicsSystem, Vector2 spawnPosition ) {
+		super( parent, spawnPosition, physicsSystem );
+	}
 
+	@Override
+	public void start( GameObject parent ) {
 		initSpriteComponent( );
 		initInputComponent();
 		initPhysicsComponent();
+
+		super.start( this );
 	}
 
 	protected Sprite loadEnemySprite( Vector2 spawnPoint ) {
@@ -69,7 +73,7 @@ public class Enemy extends EntityCharacter {
 
 	@Override
 	protected void initSpriteComponent( ) {
-		spriteComponent = new SpriteComponent( loadEnemySprite( transform.getPosition() ), this );
+		spriteComponent = new SpriteComponent( loadEnemySprite( transform.getPosition() ) );
 		addComponent( spriteComponent );
 	}
 

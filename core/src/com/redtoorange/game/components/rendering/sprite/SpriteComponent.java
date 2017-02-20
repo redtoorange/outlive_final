@@ -1,4 +1,4 @@
-package com.redtoorange.game.components.rendering;
+package com.redtoorange.game.components.rendering.sprite;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.gameobject.GameObject;
 
 /**
  * SpriteComponent.java - A Render Component that encapsulates a Sprite to allow easy movement and boudning
@@ -22,13 +22,16 @@ public class SpriteComponent extends RenderComponent {
 	 * A clone of this is stored inside the component.
 	 *
 	 * @param sprite Sprite that should be cloned.
-	 * @param parent The parent entity.
 	 */
-	public SpriteComponent( Sprite sprite, Entity parent ) {
-		super( parent );
-
-		Vector2 pos = parent.getTransform().getPosition();
+	public SpriteComponent( Sprite sprite ) {
 		this.sprite = new Sprite( sprite );
+	}
+
+	@Override
+	public void start( GameObject owner ) {
+		super.start( owner );
+
+		Vector2 pos = owner.getTransform( ).getPosition( );
 		this.sprite.setCenter( pos.x, pos.y );
 		this.sprite.setOriginCenter( );
 	}
@@ -39,11 +42,11 @@ public class SpriteComponent extends RenderComponent {
 
 	@Override
 	public void draw( SpriteBatch batch ) {
-		setCenter( parent.getTransform().getPosition( ) );
+		setCenter( owner.getTransform( ).getPosition( ) );
 		sprite.draw( batch );
 	}
 
-	public Sprite getSprite( ) {
+	public Sprite getSprite() {
 		return sprite;
 	}
 
@@ -52,7 +55,7 @@ public class SpriteComponent extends RenderComponent {
 	 *
 	 * @return A float representing the rotation of the sprite inputComponent degrees
 	 */
-	public float getRotation( ) {
+	public float getRotation() {
 		return sprite.getRotation( );
 	}
 
@@ -70,7 +73,7 @@ public class SpriteComponent extends RenderComponent {
 	 *
 	 * @return The Center of the Sprite
 	 */
-	public Vector2 getCenter( ) {
+	public Vector2 getCenter() {
 		return new Vector2( getCenterX( ), getCenterY( ) );
 	}
 
@@ -83,7 +86,7 @@ public class SpriteComponent extends RenderComponent {
 		sprite.setCenter( center.x, center.y );
 	}
 
-	public float getCenterX( ) {
+	public float getCenterX() {
 		return ( sprite.getX( ) + ( sprite.getWidth( ) / 2f ) );
 	}
 
@@ -91,7 +94,7 @@ public class SpriteComponent extends RenderComponent {
 		sprite.setCenter( x, getCenterY( ) );
 	}
 
-	public float getCenterY( ) {
+	public float getCenterY() {
 		return ( sprite.getY( ) + ( sprite.getHeight( ) / 2f ) );
 	}
 
@@ -104,21 +107,21 @@ public class SpriteComponent extends RenderComponent {
 	 *
 	 * @return The smallest possible rectangle that will fit around the Sprite Image.
 	 */
-	public Rectangle getBoundingBox( ) {
+	public Rectangle getBoundingBox() {
 		return sprite.getBoundingRectangle( );
 	}
 
-	public float getWidth( ) {
+	public float getWidth() {
 		return sprite.getWidth( );
 	}
 
-	public float getHeight( ) {
+	public float getHeight() {
 		return sprite.getHeight( );
 	}
 
 	@Override
-	public void dispose( ) {
-		if( Global.DEBUG)
-			System.out.println( this.getClass().getSimpleName() + " disposed" );
+	public void dispose() {
+		if ( Global.DEBUG )
+			System.out.println( this.getClass( ).getSimpleName( ) + " disposed" );
 	}
 }

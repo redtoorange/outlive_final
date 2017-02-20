@@ -2,7 +2,7 @@ package com.redtoorange.game.components.physics.character;
 
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.entities.characters.Player;
+import com.redtoorange.game.gameobject.characters.Player;
 import com.redtoorange.game.systems.PhysicsSystem;
 
 /**

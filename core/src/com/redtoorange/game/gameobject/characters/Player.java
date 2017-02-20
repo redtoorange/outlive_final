@@ -1,4 +1,4 @@
-package com.redtoorange.game.entities.characters;
+package com.redtoorange.game.gameobject.characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,9 +10,9 @@ import com.redtoorange.game.Inventory;
 import com.redtoorange.game.components.PlayerGunComponent;
 import com.redtoorange.game.components.input.PlayerInputComponent;
 import com.redtoorange.game.components.physics.character.PlayerPhysicsComponent;
-import com.redtoorange.game.components.rendering.CrosshairComponent;
-import com.redtoorange.game.components.rendering.SpriteComponent;
-import com.redtoorange.game.engine.Engine;
+import com.redtoorange.game.components.rendering.sprite.CrosshairComponent;
+import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
+import com.redtoorange.game.gameobject.GameObject;
 import com.redtoorange.game.screens.PlayScreen;
 import com.redtoorange.game.systems.PhysicsSystem;
 
@@ -23,29 +23,32 @@ import com.redtoorange.game.systems.PhysicsSystem;
  * @version - 13/Jan/2017
  */
 
-public class Player extends EntityCharacter {
+public class Player extends GameObjectCharacter {
 	private OrthographicCamera camera;
 	private Inventory ammo = new Inventory( );
-	private PlayScreen playScreen;
 
-	private PlayerInputComponent inputComponent;
-	private CrosshairComponent crosshairComponent;
+	private PlayScreen playScreen;
 	private SpriteComponent spriteComponent;
 
-	public Player( Engine engine, OrthographicCamera camera, PlayScreen playScreen, PhysicsSystem physicsSystem, Vector2 spawnPoint ) {
-		super( spawnPoint, engine, physicsSystem );
+	public Player( GameObject parent,  OrthographicCamera camera, PlayScreen playScreen, PhysicsSystem physicsSystem, Vector2 position ) {
+		super( parent, position, physicsSystem );
 
 		this.camera = camera;
 		this.playScreen = playScreen;
 
-		initCrosshair( );
-		initSpriteComponent( );
-		initInputComponent();
-		initPhysicsComponent();
-		initGunComponent(playScreen);
-
 		maxHealth  = 10;
 		health = 10;
+	}
+
+	@Override
+	public void start( GameObject parent ) {
+		initCrosshair( );
+		initSpriteComponent( );
+		initInputComponent( );
+		initPhysicsComponent( );
+		initGunComponent(playScreen);
+
+		super.start( parent );
 	}
 
 	public void update( float deltaTime ) {
@@ -80,12 +83,11 @@ public class Player extends EntityCharacter {
 	}
 
 	protected void initCrosshair( ) {
-		crosshairComponent = new CrosshairComponent( this );
-		addComponent( crosshairComponent );
+		addComponent( new CrosshairComponent( this ) );
 	}
 
 	protected void initGunComponent( PlayScreen playScreen){
-		addComponent( new PlayerGunComponent( physicsSystem, engine, this, playScreen ) );
+		addComponent( new PlayerGunComponent( physicsSystem, this, playScreen ) );
 	}
 
 	@Override
@@ -95,14 +97,13 @@ public class Player extends EntityCharacter {
 		Sprite sprite = new Sprite( temp );
 		sprite.setSize( 1f, 1f );
 
-		spriteComponent = new SpriteComponent( sprite, this );
+		spriteComponent = new SpriteComponent( sprite );
 		addComponent( spriteComponent );
 	}
 
 	@Override
 	protected void initInputComponent() {
-		inputComponent = new PlayerInputComponent( this, camera );
-		addComponent( inputComponent );
+		addComponent( new PlayerInputComponent( this, camera ) );
 	}
 
 	@Override

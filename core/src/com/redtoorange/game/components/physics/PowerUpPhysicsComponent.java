@@ -3,8 +3,8 @@ package com.redtoorange.game.components.physics;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.components.rendering.SpriteComponent;
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
+import com.redtoorange.game.gameobject.GameObject;
 import com.redtoorange.game.factories.Box2DFactory;
 import com.redtoorange.game.systems.PhysicsSystem;
 
@@ -15,21 +15,27 @@ import com.redtoorange.game.systems.PhysicsSystem;
  * @version 23/Jan/2017
  */
 public class PowerUpPhysicsComponent extends PhysicsComponent {
-	public PowerUpPhysicsComponent( PhysicsSystem physicsSystem, Entity parent, SpriteComponent sc ) {
-		super( physicsSystem, parent );
+	private GameObject powerUpGO;
 
-		initPhysics( sc );
+	public PowerUpPhysicsComponent( PhysicsSystem physicsSystem ) {
+		super( physicsSystem );
 	}
 
-	private void initPhysics( SpriteComponent sc ) {
-		body = Box2DFactory.createBody( physicsSystem, sc.getBoundingBox( ), BodyDef.BodyType.DynamicBody, 10f, 0, 0, true, false );
+	@Override
+	public void start( GameObject parent ) {
+		powerUpGO = parent;
+		initPhysics( parent.getComponent( SpriteComponent.class ) );
+	}
 
-		body.setUserData( parent );
+	private void initPhysics( SpriteComponent parentSpriteComponent ) {
+		body = Box2DFactory.createBody( physicsSystem, parentSpriteComponent.getBoundingBox( ), BodyDef.BodyType.DynamicBody, 10f, 0, 0, true, false );
+
+		body.setUserData( powerUpGO );
 
 		Filter f = body.getFixtureList( ).first( ).getFilterData( );
 		f.categoryBits = Global.AMMO;
 		body.getFixtureList( ).first( ).setFilterData( f );
 
-		body.setTransform( sc.getCenter( ), ( float ) Math.toRadians( sc.getRotation( ) ) );
+		body.setTransform( parentSpriteComponent.getCenter( ), ( float ) Math.toRadians( parentSpriteComponent.getRotation( ) ) );
 	}
 }

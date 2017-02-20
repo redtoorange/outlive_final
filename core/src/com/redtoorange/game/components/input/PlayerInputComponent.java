@@ -3,10 +3,12 @@ package com.redtoorange.game.components.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.entities.characters.Player;
+import com.redtoorange.game.gameobject.GameObject;
+import com.redtoorange.game.gameobject.characters.Player;
 
 /**
  * ${FILE_NAME}.java - Description
@@ -17,10 +19,12 @@ import com.redtoorange.game.entities.characters.Player;
 public class PlayerInputComponent extends InputComponent{
 	private Vector3 mousePosition = new Vector3( );
 	private OrthographicCamera camera;
+	private GameObject player;
 
 	public PlayerInputComponent( Player player, OrthographicCamera camera){
-		super( player );
+		super(player);
 		this.camera = camera;
+		this.player = player;
 	}
 
 	protected void updateDeltaInput( ) {
@@ -40,7 +44,7 @@ public class PlayerInputComponent extends InputComponent{
 	}
 
 	public void updateRotation(){
-		float rotation = Global.lookAt( parent.getTransform().getPosition(), new Vector2( mousePosition.x, mousePosition.y ) );
+		float rotation = Global.lookAt( player.getTransform().getPosition(), new Vector2( mousePosition.x, mousePosition.y ) );
 		sc.setRotation( rotation );
 	}
 
@@ -64,6 +68,11 @@ public class PlayerInputComponent extends InputComponent{
 
 	@Override
 	public void dispose( ) {
+
+	}
+
+	@Override
+	public void draw( SpriteBatch batch ) {
 
 	}
 }

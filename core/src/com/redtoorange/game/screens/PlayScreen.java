@@ -4,7 +4,6 @@ import box2dLight.ConeLight;
 import box2dLight.Light;
 import box2dLight.PointLight;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -23,14 +22,14 @@ import com.redtoorange.game.ContactManager;
 import com.redtoorange.game.Core;
 import com.redtoorange.game.Global;
 import com.redtoorange.game.PerformanceCounter;
-import com.redtoorange.game.components.rendering.SpriteComponent;
-import com.redtoorange.game.engine.Engine;
-import com.redtoorange.game.entities.GameMap;
-import com.redtoorange.game.entities.characters.Player;
-import com.redtoorange.game.entities.characters.enemies.Enemy;
-import com.redtoorange.game.entities.powerups.Ammo;
-import com.redtoorange.game.entities.powerups.Health;
+import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
 import com.redtoorange.game.factories.Box2DFactory;
+import com.redtoorange.game.gameobject.GameMap;
+import com.redtoorange.game.gameobject.SceneRoot;
+import com.redtoorange.game.gameobject.characters.Player;
+import com.redtoorange.game.gameobject.characters.enemies.Enemy;
+import com.redtoorange.game.gameobject.powerups.Ammo;
+import com.redtoorange.game.gameobject.powerups.Health;
 import com.redtoorange.game.systems.PhysicsSystem;
 import com.redtoorange.game.ui.GunUI;
 
@@ -46,6 +45,7 @@ public class PlayScreen extends ScreenAdapter {
 	private static final int AMMO_COUNT = 25;
 
 	boolean fading = true;
+	boolean running = true;
 	private Core core;
 	private OrthographicCamera camera;
 	private Viewport viewport;
@@ -55,39 +55,35 @@ public class PlayScreen extends ScreenAdapter {
 	private Box2DDebugRenderer debugRenderer;
 	private ContactManager contactManager;
 	private float cameraSmoothing = 0.1f;
-	private Engine engine;
 	private PhysicsSystem physicsSystem;
 	private GunUI gunui;
-
 	private ConeLight flashLight;
 	private PointLight playerLight;
 	private PointLight houseLight;
-
 	private PerformanceCounter updateCounter = new PerformanceCounter( "Update:" );
 	private Color minColor = new Color( 1, .5f, .5f, .25f );
 	private Color maxColor = new Color( 1, .5f, .5f, .75f );
 	private PerformanceCounter drawCounter = new PerformanceCounter( "Draw:" );
-	boolean running = true;
+	private SceneRoot sceneRoot = new SceneRoot( );
 
 	public PlayScreen( Core core ) {
 		this.core = core;
 	}
 
 	@Override
-	public void show( ) {
+	public void show() {
 		init( );
 	}
 
-	private void init( ) {
+	private void init() {
 		VisUI.load( );
 
 		Gdx.input.setCursorCatched( true );
 		Gdx.input.setCursorPosition( Global.WINDOW_WIDTH / 2, Global.WINDOW_HEIGHT / 2 );
-		Gdx.input.setInputProcessor( new mouseProcessor() );
+		Gdx.input.setInputProcessor( new mouseProcessor( ) );
 
 		debugRenderer = new Box2DDebugRenderer( );
 		contactManager = new ContactManager( );
-		engine = new Engine( );
 
 		gunui = new GunUI( );
 		physicsSystem = new PhysicsSystem( );
@@ -97,31 +93,30 @@ public class PlayScreen extends ScreenAdapter {
 		viewport = new ExtendViewport( Global.VIRTUAL_WIDTH, Global.VIRTUAL_HEIGHT, camera );
 		batch = new SpriteBatch( );
 
-		gameMap = new GameMap( "tilemaps/test_map.tmx", null, batch, camera, 1 / 16f );
+		gameMap = new GameMap( sceneRoot, "tilemaps/test_map.tmx", batch, camera, 1 / 16f );
 
 		Vector2 playerSpawn = new Vector2( );
 		gameMap.playerSpawns.first( ).getCenter( playerSpawn );
 
-		player = new Player( engine, camera, this, physicsSystem, playerSpawn );
+		player = new Player( sceneRoot, camera, this, physicsSystem, playerSpawn );
 		System.out.println( playerSpawn );
 
 		initWalls( );
 
 
 		for ( int i = 0; i < ENEMY_COUNT; i++ ) {
-			engine.addEntity( new Enemy( physicsSystem, engine, new Vector2( MathUtils.random( 1, 99 ), MathUtils.random( 1, 99 ) ), player ) );
+			sceneRoot.addChild( new Enemy( sceneRoot, physicsSystem, new Vector2( MathUtils.random( 1, 99 ), MathUtils.random( 1, 99 ) ), player ) );
 		}
 
 		for ( int i = 0; i < AMMO_COUNT; i++ ) {
-			engine.addEntity( new Ammo( new Vector2( MathUtils.random( 1, 99 ), MathUtils.random( 1, 99 ) ), engine, physicsSystem ) );
+			sceneRoot.addChild( new Ammo( sceneRoot, new Vector2( MathUtils.random( 1, 99 ), MathUtils.random( 1, 99 ) ), physicsSystem ) );
 		}
 
 		for ( int i = 0; i < HEALTH_COUNT; i++ ) {
-			engine.addEntity( new Health( new Vector2( MathUtils.random( 1, 99 ), MathUtils.random( 1, 99 ) ), engine, physicsSystem ) );
+			sceneRoot.addChild( new Health( sceneRoot, new Vector2( MathUtils.random( 1, 99 ), MathUtils.random( 1, 99 ) ), physicsSystem ) );
 		}
 
-
-		engine.addEntity( player );
+		sceneRoot.addChild( player );
 
 		playerLight = new PointLight( physicsSystem.getRayHandler( ), 10, new Color( 1, 1, 1, .75f ), 1f, playerSpawn.x, playerSpawn.y );
 		houseLight = new PointLight( physicsSystem.getRayHandler( ), 100, new Color( 1, .5f, .5f, .75f ), 10f, 21, 3.5f );
@@ -133,9 +128,11 @@ public class PlayScreen extends ScreenAdapter {
 		f.categoryBits = Global.LIGHT;
 		f.maskBits = Global.ENEMY | Global.WALL;
 		Light.setGlobalContactFilter( f );
+
+		sceneRoot.start( null );
 	}
 
-	private void initWalls( ) {
+	private void initWalls() {
 		for ( Rectangle r : gameMap.walls ) {
 			Filter w = new Filter( );
 			w.groupIndex = Global.WALL;
@@ -156,32 +153,15 @@ public class PlayScreen extends ScreenAdapter {
 		updateCounter.start( );
 		physicsSystem.update( deltaTime );
 
-		engine.update( deltaTime );
+		sceneRoot.update( deltaTime );
 		gameMap.update( deltaTime );
 		gunui.update( deltaTime );
 
 		updateCameraPosition( );
-
-//		Color c = houseLight.getColor( );
-//		if ( fading ) {
-//			c.lerp( minColor, deltaTime * ( MathUtils.random( 2, 7 ) ) );
-//			if ( c.a <= 0.3f )
-//				fading = false;
-//		} else {
-//			c.lerp( maxColor, deltaTime * ( MathUtils.random( 2, 7 ) ) );
-//			if ( c.a >= .7f )
-//				fading = true;
-//		}
-//		houseLight.setColor( c );
-		//System.out.println( updateCounter );
-
-
 	}
 
-	/**
-	 *
-	 */
-	public void draw( ) {
+
+	public void draw() {
 		if ( !running )
 			return;
 
@@ -193,13 +173,13 @@ public class PlayScreen extends ScreenAdapter {
 
 		batch.setProjectionMatrix( camera.combined );
 		batch.begin( );
-		engine.render( batch );
+		sceneRoot.draw( batch );
 		batch.end( );
 
 		renderLighting( );
 
 		batch.begin( );
-		engine.postLighting( batch );
+		//engine.postLighting( batch );
 		batch.end( );
 
 		gunui.draw( batch );
@@ -211,7 +191,7 @@ public class PlayScreen extends ScreenAdapter {
 		//System.out.println( drawCounter );
 	}
 
-	private void renderLighting( ) {
+	private void renderLighting() {
 		if ( !running )
 			return;
 
@@ -227,7 +207,7 @@ public class PlayScreen extends ScreenAdapter {
 		}
 	}
 
-	private void updateCameraPosition( ) {
+	private void updateCameraPosition() {
 		if ( player != null )
 			camera.position.lerp( player.getPosition3D( ), cameraSmoothing );
 	}
@@ -240,11 +220,8 @@ public class PlayScreen extends ScreenAdapter {
 	}
 
 	@Override
-	public void dispose( ) {
-		if ( engine != null ) {
-			engine.dispose( );
-			engine = null;
-		}
+	public void dispose() {
+		sceneRoot.dispose( );
 
 		if ( physicsSystem != null ) {
 			flashLight = null;
@@ -276,19 +253,19 @@ public class PlayScreen extends ScreenAdapter {
 		}
 	}
 
-	public GunUI getGunUI( ) {
+	public GunUI getGunUI() {
 		return gunui;
 	}
 
-	private void mouseWheelMovement( int amount ){
+	private void mouseWheelMovement( int amount ) {
 
-		if(amount != 0)
-			changeZoom(amount);
+		if ( amount != 0 )
+			changeZoom( amount );
 	}
 
-	private void changeZoom( float amount ){
-		float w = viewport.getWorldWidth();
-		float h = viewport.getWorldHeight();
+	private void changeZoom( float amount ) {
+		float w = viewport.getWorldWidth( );
+		float h = viewport.getWorldHeight( );
 
 		w -= amount;
 		h -= amount;
@@ -297,7 +274,7 @@ public class PlayScreen extends ScreenAdapter {
 		viewport.setWorldHeight( h );
 	}
 
-	private class mouseProcessor implements InputProcessor{
+	private class mouseProcessor implements InputProcessor {
 		@Override
 		public boolean keyDown( int keycode ) {
 			return false;

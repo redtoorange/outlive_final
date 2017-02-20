@@ -14,12 +14,10 @@ import com.redtoorange.game.Global;
 import com.redtoorange.game.GunType;
 import com.redtoorange.game.Inventory;
 import com.redtoorange.game.components.input.PlayerInputComponent;
-import com.redtoorange.game.components.rendering.SpriteComponent;
-import com.redtoorange.game.engine.Drawable;
-import com.redtoorange.game.engine.Engine;
-import com.redtoorange.game.engine.Updateable;
-import com.redtoorange.game.entities.Bullet;
-import com.redtoorange.game.entities.characters.Player;
+import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
+import com.redtoorange.game.gameobject.Bullet;
+import com.redtoorange.game.gameobject.GameObject;
+import com.redtoorange.game.gameobject.characters.Player;
 import com.redtoorange.game.screens.PlayScreen;
 import com.redtoorange.game.systems.PhysicsSystem;
 import com.redtoorange.game.systems.sound.GunSoundManager;
@@ -31,7 +29,7 @@ import com.redtoorange.game.systems.sound.SoundEffect;
  * @author - Andrew M.
  * @version - 14/Jan/2017
  */
-public class PlayerGunComponent extends Component implements Updateable, Drawable {
+public class PlayerGunComponent extends Component {
 	private final GunType type = GunType.REVOLVER;
 	private final int MAX_BULLETS = 6;
 	private final Player player;
@@ -51,6 +49,7 @@ public class PlayerGunComponent extends Component implements Updateable, Drawabl
 
 	private SpriteComponent sc;
 	private PlayerInputComponent in;
+	private PhysicsSystem physicsSystem;
 
 	private GunSoundManager gsm = new GunSoundManager( );
 	private boolean reloading = false;
@@ -59,18 +58,21 @@ public class PlayerGunComponent extends Component implements Updateable, Drawabl
 	private float muzzleFlashTimer = 0.0f;
 	private float muzzelFlashDwell = 0.05f;
 
-	public PlayerGunComponent( PhysicsSystem physicsSystem, Engine engine, Player player, PlayScreen playScreen ) {
-		super( player );
-
+	public PlayerGunComponent( PhysicsSystem physicsSystem, Player player, PlayScreen playScreen ) {
 		this.playScreen = playScreen;
 		this.player = player;
+		this.physicsSystem = physicsSystem;
+	}
+
+	@Override
+	public void start( GameObject parent ) {
+		super.start( parent );
+
+		initBullets( physicsSystem );
 		playerInventory = player.getInventoy( );
 
-		initBullets( physicsSystem, engine );
-
-		for ( int i = 0; i <= maxBulletsInGun; i++ ) {
+		for ( int i = 0; i <= maxBulletsInGun; i++ )
 			bulletTextures[ i ] = new TextureRegion( new Texture( "weapons/revolver/revolver_" + i + ".png" ) );
-		}
 
 		playScreen.getGunUI( ).swapCurrentImage( bulletTextures[ maxBulletsInGun ] );
 		sc = player.getComponent( SpriteComponent.class );
@@ -201,14 +203,14 @@ public class PlayerGunComponent extends Component implements Updateable, Drawabl
 		muzzleFlashTimer = muzzelFlashDwell;
 	}
 
-	private void initBullets( PhysicsSystem physicsSystem, Engine engine ) {
+	private void initBullets( PhysicsSystem physicsSystem ) {
 		bulletTexture = new Texture( "bullet.png" );
 		Sprite bulletSprite = new Sprite( bulletTexture );
 		bulletSprite.setSize( 1f, 1f );
 		bulletSprite.setOriginCenter( );
 
 		for ( int i = 0; i < MAX_BULLETS; i++ ) {
-			bulletController.add( new Bullet( new Sprite( bulletSprite ), engine, physicsSystem, new Vector2( -1000, -1000 ), speed ) );
+			bulletController.add( new Bullet( player, new Sprite( bulletSprite ), physicsSystem, new Vector2( -1000, -1000 ), speed ) );
 		}
 	}
 

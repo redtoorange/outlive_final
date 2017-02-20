@@ -1,12 +1,12 @@
-package com.redtoorange.game.entities.powerups;
+package com.redtoorange.game.gameobject.powerups;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.redtoorange.game.GunType;
-import com.redtoorange.game.engine.Engine;
-import com.redtoorange.game.entities.characters.EntityCharacter;
-import com.redtoorange.game.entities.characters.Player;
+import com.redtoorange.game.gameobject.GameObject;
+import com.redtoorange.game.gameobject.characters.GameObjectCharacter;
+import com.redtoorange.game.gameobject.characters.Player;
 import com.redtoorange.game.systems.PhysicsSystem;
 import com.redtoorange.game.systems.sound.SoundEffect;
 import com.redtoorange.game.systems.sound.SoundManager;
@@ -22,8 +22,8 @@ public class Ammo extends PowerUp {
 	private int amount;
 	private SoundManager sm;
 
-	public Ammo( Vector2 position, Engine engine, PhysicsSystem physicsSystem ) {
-		super( engine, position, new Texture( "weapons/revolver/bullets.png" ), physicsSystem );
+	public Ammo( GameObject parent, Vector2 position, PhysicsSystem physicsSystem ) {
+		super( parent, position, new Texture( "weapons/revolver/bullets.png" ), physicsSystem );
 
 		sm = new SoundManager( );
 		sm.addSound( "ammopickup", new SoundEffect( "sounds/ammopickup.wav", 0.10f ) );
@@ -31,7 +31,7 @@ public class Ammo extends PowerUp {
 	}
 
 	@Override
-	public void absorbed( EntityCharacter c ) {
+	public void absorbed( GameObjectCharacter c ) {
 		System.out.println( "Player pickedup " + amount + " " + type + " bullets." );
 		sm.playSound( "ammopickup" );
 		( ( Player ) c ).pickupAmmo( type, amount );

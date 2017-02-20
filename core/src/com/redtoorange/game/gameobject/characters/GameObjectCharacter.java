@@ -1,19 +1,18 @@
-package com.redtoorange.game.entities.characters;
+package com.redtoorange.game.gameobject.characters;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.redtoorange.game.engine.Engine;
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.gameobject.GameObject;
 import com.redtoorange.game.systems.PhysicsSystem;
 
-public abstract class EntityCharacter extends Entity {
+public abstract class GameObjectCharacter extends GameObject {
 	protected PhysicsSystem physicsSystem;
 
 	protected int maxHealth = 1;
 	protected int health = maxHealth;
 
-	public EntityCharacter( Vector2 position, Engine engine, PhysicsSystem physicsSystem ) {
-		super( position, engine );
+	public GameObjectCharacter( GameObject parent, Vector2 position, PhysicsSystem physicsSystem ) {
+		super( parent, position );
 		this.physicsSystem = physicsSystem;
 	}
 

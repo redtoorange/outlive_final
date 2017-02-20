@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.gameobject.GameObject;
 import com.redtoorange.game.systems.RenderingSystem;
 
 public class Engine implements Disposable {
 	private RenderingSystem renderingSystem;
 
 	private Array<EntityListener> entityListeners;
-	private Array<Entity> entities;
+	private Array<GameObject > entities;
 
 	public Engine( ) {
 		renderingSystem = new RenderingSystem();
@@ -19,11 +19,11 @@ public class Engine implements Disposable {
 		entityListeners = new Array<EntityListener>(  );
 		entityListeners.add( renderingSystem );
 
-		entities = new Array<Entity>( );
+		entities = new Array<GameObject >( );
 	}
 
 	public void update( float deltaTime ) {
-		for ( Entity e : entities ) {
+		for ( GameObject e : entities ) {
 			e.update( deltaTime );
 		}
 	}
@@ -36,14 +36,14 @@ public class Engine implements Disposable {
 		renderingSystem.postLightingRender( batch );
 	}
 
-	/*
-	 * Adds an Entity to the engine.  All attached Systems will parse the entities components for compatible types.
+	/**
+	 * Adds an GameObject to the engine.  All attached Systems will parse the gameobject components for compatible types.
 	 * Comparison for equivalence is always by reference.
 	 *
-	 * @return		Returns -1 if the Entity is already present and 0 if it was added successfully.
-	 * @param	e	A subclass of Entity that needs to be added to the Engine.
+	 * @return		Returns -1 if the GameObject is already present and 0 if it was added successfully.
+	 * @param	e	A subclass of GameObject that needs to be added to the Engine.
 	 */
-	public int addEntity( Entity e ) {
+	public int addEntity( GameObject e ) {
 		int result = Global.PRESENT;
 
 		if ( !entities.contains( e, true ) ) {
@@ -56,14 +56,14 @@ public class Engine implements Disposable {
 		return result;
 	}
 
-	/*
-	 * Removes an Entity from the engine.  Dispose will NOT be called on the entity.  If this is the only reference, you will
+	/**
+	 * Removes an GameObject from the engine.  Dispose will NOT be called on the entity.  If this is the only reference, you will
 	 * lose access. Comparison for equivalence is always by reference.
 	 *
-	 * @return		Returns -2 if the Entity is not present and 0 if it was removed successfully.
-	 * @param	e	A subclass of Entity that needs to be removed from the engine.
+	 * @return		Returns -2 if the GameObject is not present and 0 if it was removed successfully.
+	 * @param	e	A subclass of GameObject that needs to be removed from the engine.
 	 */
-	public int removeEntity( Entity e ) {
+	public int removeEntity( GameObject e ) {
 		int result = Global.FAILURE;
 
 		if ( entities.contains( e, true ) ) {
@@ -92,12 +92,12 @@ public class Engine implements Disposable {
 			System.out.println( "Engine disposed" );
 	}
 
-	private void entityAdded( Entity e){
+	private void entityAdded( GameObject e){
 		for(EntityListener el : entityListeners)
 			el.entityAdded( e );
 	}
 
-	private void entityRemoved(Entity e){
+	private void entityRemoved(GameObject e){
 		for(EntityListener el : entityListeners)
 			el.entityRemoved( e );
 	}
@@ -105,7 +105,7 @@ public class Engine implements Disposable {
 	public void addSystem( EntityListener system ){
 		entityListeners.add( system );
 
-		for(Entity e : entities)
+		for(GameObject e : entities)
 			system.entityAdded( e );
 	}
 

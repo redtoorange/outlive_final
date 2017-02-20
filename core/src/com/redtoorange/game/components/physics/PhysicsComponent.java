@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
-import com.redtoorange.game.entities.Entity;
 import com.redtoorange.game.systems.PhysicsSystem;
 
 /**
@@ -18,15 +17,8 @@ public abstract class PhysicsComponent extends Component {
 	protected PhysicsSystem physicsSystem;
 	protected float speed;
 
-	/**
-	 * Calls the Component constructor which sets the
-	 * parent.  Sets a reference to the PhysicsSystem.
-	 *
-	 * @param physicsSystem Box2D wrapper for the world and all the bodies inputComponent it.
-	 * @param parent        The entity that is holding this component.
-	 */
-	public PhysicsComponent( PhysicsSystem physicsSystem, Entity parent ) {
-		super( parent );
+
+	public PhysicsComponent( PhysicsSystem physicsSystem ) {
 		this.physicsSystem = physicsSystem;
 	}
 
@@ -35,7 +27,7 @@ public abstract class PhysicsComponent extends Component {
 	 *
 	 * @return The center position of the Box2D Body attached to this Component.
 	 */
-	public Vector2 getBodyPosition( ) {
+	public Vector2 getBodyPosition() {
 		Vector2 position = new Vector2( );
 
 		if ( body != null )
@@ -44,7 +36,7 @@ public abstract class PhysicsComponent extends Component {
 		return position;
 	}
 
-	public void destroy( ) {
+	public void destroy() {
 		if ( body != null && physicsSystem != null ) {
 			physicsSystem.destroyBody( body );
 			body = null;
@@ -52,10 +44,10 @@ public abstract class PhysicsComponent extends Component {
 	}
 
 	@Override
-	public void dispose( ) {
-		destroy();
+	public void dispose() {
+		destroy( );
 
-		if( Global.DEBUG)
-			System.out.println( this.getClass().getSimpleName() + " disposed" );
+		if ( Global.DEBUG )
+			System.out.println( this.getClass( ).getSimpleName( ) + " disposed" );
 	}
 }
