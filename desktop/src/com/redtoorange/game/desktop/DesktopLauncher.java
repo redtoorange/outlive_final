@@ -4,6 +4,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.redtoorange.game.Core;
 import com.redtoorange.game.Global;
+import org.lwjgl.input.Mouse;
 
 /**
  * DesktopLauncher.java - Basic Windows window handler.  Launches a new copy of Core. Program entry point.

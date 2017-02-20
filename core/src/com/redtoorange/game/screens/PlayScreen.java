@@ -161,21 +161,6 @@ public class PlayScreen extends ScreenAdapter {
 		gunui.update( deltaTime );
 
 		updateCameraPosition( );
-
-//		Color c = houseLight.getColor( );
-//		if ( fading ) {
-//			c.lerp( minColor, deltaTime * ( MathUtils.random( 2, 7 ) ) );
-//			if ( c.a <= 0.3f )
-//				fading = false;
-//		} else {
-//			c.lerp( maxColor, deltaTime * ( MathUtils.random( 2, 7 ) ) );
-//			if ( c.a >= .7f )
-//				fading = true;
-//		}
-//		houseLight.setColor( c );
-		//System.out.println( updateCounter );
-
-
 	}
 
 	/**

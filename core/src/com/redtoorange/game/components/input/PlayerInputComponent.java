@@ -3,6 +3,7 @@ package com.redtoorange.game.components.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.redtoorange.game.Global;
@@ -44,8 +45,14 @@ public class PlayerInputComponent extends InputComponent{
 		sc.setRotation( rotation );
 	}
 
+	private float MAX_X = 1000;
 	private void updateMousePosition(){
+		int x = MathUtils.clamp( Gdx.input.getX(), 0, Gdx.graphics.getWidth() );
+		int y = MathUtils.clamp( Gdx.input.getY(), 0, Gdx.graphics.getHeight() );
+		Gdx.input.setCursorPosition( x, y );
+
 		mousePosition = camera.unproject( new Vector3( Gdx.input.getX( ), Gdx.input.getY( ), 0f ) );
+
 	}
 
 	public void update(float deltaTime){
