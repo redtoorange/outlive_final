@@ -1,11 +1,10 @@
-package com.redtoorange.game.entities;
+package com.redtoorange.game.gameobject;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.redtoorange.game.components.physics.BulletPhysicsComponent;
-import com.redtoorange.game.components.rendering.SpriteComponent;
-import com.redtoorange.game.engine.Engine;
+import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
 import com.redtoorange.game.systems.PhysicsSystem;
 import com.redtoorange.game.systems.sound.SoundEffect;
 import com.redtoorange.game.systems.sound.SoundManager;
@@ -17,7 +16,7 @@ import com.redtoorange.game.systems.sound.SoundManager;
  * @author - Andrew M.
  * @version - 13/Jan/2017
  */
-public class Bullet extends Entity {
+public class Bullet extends GameObject {
 	protected float lifeTime = 0.0f;
 	protected float maxLife = 5.0f;
 	protected boolean alive = false;
@@ -27,11 +26,11 @@ public class Bullet extends Entity {
 
 	private SoundManager sm = new SoundManager( );
 
-	public Bullet( Sprite sprite, Engine engine, PhysicsSystem physicsSystem, Vector2 position, float speed ) {
-		super( position, engine );
+	public Bullet( GameObject parent, Sprite sprite, PhysicsSystem physicsSystem, Vector2 position, float speed ) {
+		super( parent, position );
 
 		this.speed = speed;
-		spriteComponent = new SpriteComponent( sprite, this );
+		spriteComponent = new SpriteComponent( sprite );
 		bulletPhysicsComponent = new BulletPhysicsComponent( physicsSystem, this, spriteComponent );
 
 		components.add( bulletPhysicsComponent );
@@ -80,8 +79,6 @@ public class Bullet extends Entity {
 
 	@Override
 	public void dispose( ) {
-		if ( engine != null )
-			engine.removeEntity( this );
 		if ( spriteComponent != null )
 			spriteComponent.dispose( );
 		if ( bulletPhysicsComponent != null )

@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.VisUI;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.gameobject.GameObject;
 import com.redtoorange.game.systems.System;
 
 /**
@@ -73,12 +73,12 @@ public class GunUI extends System {
 	}
 
 	@Override
-	public void entityAdded( Entity e ) {
+	public void entityAdded( GameObject e ) {
 
 	}
 
 	@Override
-	public void entityRemoved( Entity e ) {
+	public void entityRemoved( GameObject e ) {
 
 	}
 }

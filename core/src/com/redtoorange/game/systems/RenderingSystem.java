@@ -9,7 +9,7 @@ import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
 import com.redtoorange.game.engine.Drawable;
 import com.redtoorange.game.engine.PostLightingDraw;
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.gameobject.GameObject;
 
 /**
  * RenderingSystem.java - A system that will manage and render all Render Components registered with the engine.
@@ -28,7 +28,7 @@ public class RenderingSystem extends System {
 	}
 
 	@Override
-	public void entityAdded( Entity e ) {
+	public void entityAdded( GameObject e ) {
 		for( Component c : e.getComponents()) {
 			if ( c instanceof Drawable )
 				drawables.add( ( Drawable ) c );
@@ -38,7 +38,7 @@ public class RenderingSystem extends System {
 	}
 
 	@Override
-	public void entityRemoved( Entity e ) {
+	public void entityRemoved( GameObject e ) {
 		for( Component c : e.getComponents()) {
 			if ( c instanceof Drawable )
 				drawables.removeValue( ( Drawable ) c, true );

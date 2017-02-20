@@ -2,19 +2,19 @@ package com.redtoorange.game;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
-import com.redtoorange.game.entities.Bullet;
-import com.redtoorange.game.entities.characters.Player;
-import com.redtoorange.game.entities.characters.enemies.Enemy;
-import com.redtoorange.game.entities.powerups.PowerUp;
+import com.redtoorange.game.gameobject.Bullet;
+import com.redtoorange.game.gameobject.characters.Player;
+import com.redtoorange.game.gameobject.characters.enemies.Enemy;
+import com.redtoorange.game.gameobject.powerups.PowerUp;
 
 /**
- * ContactManager.java - Handle the contacts between different entities.
+ * ContactManager.java - Handle the contacts between different gameobject.
  *
  * @author - Andrew M.
  * @version - 13/Jan/2017
  */
 //TODO: Steamline the contacts with presolving.
-//TODO: Implement Filters for all major entities.
+//TODO: Implement Filters for all major gameobject.
 public class ContactManager implements ContactListener {
 	@Override
 	public void beginContact( Contact contact ) {

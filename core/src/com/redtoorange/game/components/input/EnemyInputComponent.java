@@ -1,10 +1,11 @@
 package com.redtoorange.game.components.input;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.entities.characters.EntityCharacter;
-import com.redtoorange.game.entities.characters.enemies.Enemy;
+import com.redtoorange.game.gameobject.characters.GameObjectCharacter;
+import com.redtoorange.game.gameobject.characters.enemies.Enemy;
 
 /**
  * ${FILE_NAME}.java - Description
@@ -16,18 +17,19 @@ public class EnemyInputComponent extends InputComponent{
 	private float rotation;
 	private float sensorRange = 10f;
 	private Enemy controlled;
-
-	private float roamingTime = 1.0f;
-	private float roamingDelay = 0.25f;
-
+	float roamDirection = MathUtils.random( 0f, 359f );
+	private float roamingTime = 0;
+	private float roamingDelay = 0;
 	private State currentState = State.ROAMING;
+
 	private enum State{
 		ROAMING, CHASING
 	}
 
-	public EnemyInputComponent( EntityCharacter parent, float sensorRange  ) {
-		super( parent );
-		this.controlled = (Enemy)parent;
+	public EnemyInputComponent( GameObjectCharacter owner, float sensorRange  ) {
+		super( owner );
+
+		this.controlled = (Enemy)owner;
 		this.sensorRange = sensorRange;
 	}
 
@@ -54,7 +56,7 @@ public class EnemyInputComponent extends InputComponent{
 		}
 	}
 
-	float roamDirection = MathUtils.random( 0f, 359f );
+
 
 	private void romaingAI( float deltaTime ){
 		if( roamingTime > 0 ){
@@ -78,18 +80,19 @@ public class EnemyInputComponent extends InputComponent{
 		roamingTime = MathUtils.random( 1f, 2f );
 		roamingDelay = MathUtils.random( 0.25f, 1f );
 		roamDirection = MathUtils.random( 0f, 359f );
+		applyDirection();
 	}
 
 	private boolean withinRange( ) {
-		Vector2 a = parent.getTransform().getPosition();
+		Vector2 a = controlled.getTransform().getPosition();
 		Vector2 b = controlled.getPlayer().getTransform().getPosition();
 		return sensorRange > Vector2.dst( a.x, a.y, b.x, b.y );
 	}
 
 	protected void rotateToFacePlayer( ) {
 		rotation = Global.lookAt(
-				parent.getTransform().getPosition(),
-				(( Enemy)parent).getPlayer().getTransform().getPosition( ) );
+				controlled.getTransform().getPosition(),
+				controlled.getPlayer().getTransform().getPosition( ) );
 		sc.setRotation( rotation );
 	}
 
@@ -113,6 +116,11 @@ public class EnemyInputComponent extends InputComponent{
 
 	@Override
 	public void dispose( ) {
+
+	}
+
+	@Override
+	public void draw( SpriteBatch batch ) {
 
 	}
 }

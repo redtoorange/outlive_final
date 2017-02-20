@@ -1,6 +1,6 @@
 package com.redtoorange.game.engine;
 
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.gameobject.GameObject;
 
 /**
  * EntityListener.java - DESCRIPTION
@@ -9,6 +9,6 @@ import com.redtoorange.game.entities.Entity;
  * @version - 29/Jan/2017
  */
 public interface EntityListener {
-	void entityAdded( Entity e);
-	void entityRemoved( Entity e);
+	void entityAdded( GameObject e);
+	void entityRemoved( GameObject e);
 }

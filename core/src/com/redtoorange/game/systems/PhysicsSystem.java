@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.redtoorange.game.Global;
 import com.redtoorange.game.engine.Updateable;
-import com.redtoorange.game.entities.Entity;
+import com.redtoorange.game.gameobject.GameObject;
 
 /**
  * PhysicsSystem.java - Box2D Physics World encapsulation.  Will handle adding and removal of bodies
@@ -149,12 +149,12 @@ public class PhysicsSystem extends System implements Updateable, Disposable {
 	}
 
 	@Override
-	public void entityAdded( Entity e ) {
+	public void entityAdded( GameObject e ) {
 
 	}
 
 	@Override
-	public void entityRemoved( Entity e ) {
+	public void entityRemoved( GameObject e ) {
 
 	}
 }
