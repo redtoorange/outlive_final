@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
 import com.redtoorange.game.components.TransformComponent;
+import com.redtoorange.game.engine.PostLightingDraw;
 
 /**
  * GameObject.java - DESCRIPTION
@@ -28,27 +29,37 @@ public abstract class GameObject implements Disposable {
 	}
 
 	public void start( GameObject parent ){
-		for( Component c : components)
-			c.start( this );
+		for( int i = 0; i < components.size; i++ )
+			components.get( i ).start( this );
 
-		for( GameObject go : children )
-			go.start( this );
+		for( int i = 0; i < children.size; i++ )
+			children.get( i ).start( this );
 	}
 
 	public void update( float deltaTime ) {
-		for( Component c : components)
-			c.update( deltaTime );
+		for( int i = 0; i < components.size; i++ )
+			components.get( i ).update( deltaTime );
 
-		for( GameObject go : children )
-			go.update( deltaTime );
+		for( int i = 0; i < children.size; i++ )
+			children.get( i ).update( deltaTime );
 	}
 
-	public void draw( SpriteBatch batch ){
-		for( Component c : components)
-			c.draw( batch );
+	public void preLighting( SpriteBatch batch ){
+		for( int i = 0; i < components.size; i++ )
+			if( !(components.get( i ) instanceof PostLightingDraw) )
+				components.get( i ).draw( batch );
 
-		for( GameObject go : children )
-			go.draw( batch );
+		for( int i = 0; i < children.size; i++ )
+			children.get( i ).preLighting( batch );
+	}
+
+	public void postLighting( SpriteBatch batch ){
+		for( int i = 0; i < components.size; i++ )
+			if( components.get( i ) instanceof PostLightingDraw )
+				components.get( i ).draw( batch );
+
+		for( int i = 0; i < children.size; i++ )
+			children.get( i ).postLighting( batch );
 	}
 
 	public GameObject getParent(){

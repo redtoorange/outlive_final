@@ -80,7 +80,7 @@ public class SpriteComponent extends RenderComponent {
 	/**
 	 * Set the center of the Sprite, this does NOT set the upper left position like a normal position.set()
 	 *
-	 * @param center Where the center of the sprite should be draw.
+	 * @param center Where the center of the sprite should be preLighting.
 	 */
 	public void setCenter( Vector2 center ) {
 		sprite.setCenter( center.x, center.y );

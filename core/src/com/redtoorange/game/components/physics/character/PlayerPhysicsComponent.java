@@ -2,6 +2,7 @@ package com.redtoorange.game.components.physics.character;
 
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.redtoorange.game.Global;
+import com.redtoorange.game.gameobject.GameObject;
 import com.redtoorange.game.gameobject.characters.Player;
 import com.redtoorange.game.systems.PhysicsSystem;
 
@@ -15,6 +16,13 @@ public class PlayerPhysicsComponent extends CharacterPhysicsComponent {
 	public PlayerPhysicsComponent( PhysicsSystem physicsSystem, Player player ) {
 		super( physicsSystem, player, 5f, 10f, 10f,
 				5f );
+
+	}
+
+	@Override
+	public void start( GameObject owner ) {
+		super.start( owner );
+
 		Filter f = body.getFixtureList( ).first( ).getFilterData( );
 		f.categoryBits = Global.PLAYER;
 		f.maskBits = Global.WALL | Global.ENEMY | Global.AMMO;

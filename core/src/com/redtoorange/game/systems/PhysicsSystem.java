@@ -20,16 +20,12 @@ import com.redtoorange.game.gameobject.GameObject;
  * @author - Andrew M.
  * @version - 20/Jan/2017
  */
-public class PhysicsSystem extends System implements Updateable, Disposable {
+public class PhysicsSystem extends System {
 	private World world;
 	private boolean cullBodies = false;
 	private Array<Body> deadBodies = new Array<Body>( );
-
 	private boolean createBodies = false;
 	private Array<BodyDef> newBodies = new Array<BodyDef>( );
-	private RayHandler rayHandler;
-
-	private Color ambientLight = new Color( 0.1f, 0.1f, 0.1f, 0.1f );
 
 	/**
 	 * Create a new Box2D World with no gravity.
@@ -37,8 +33,6 @@ public class PhysicsSystem extends System implements Updateable, Disposable {
 	public PhysicsSystem( ) {
 		super( );
 		world = new World( new Vector2( 0f, 0f ), true );
-		rayHandler = new RayHandler( world );
-		rayHandler.setAmbientLight( ambientLight );
 	}
 
 	/**
@@ -48,15 +42,7 @@ public class PhysicsSystem extends System implements Updateable, Disposable {
 	 * @param allowSleeping Should the World allow bodies to sleep.
 	 */
 	public PhysicsSystem( Vector2 gravity, boolean allowSleeping ) {
-		super( );
 		world = new World( new Vector2( gravity ), allowSleeping );
-		rayHandler = new RayHandler( world );
-		rayHandler.setAmbientLight( ambientLight );
-	}
-
-	public void render( OrthographicCamera camera ) {
-		rayHandler.setCombinedMatrix( camera );
-		rayHandler.updateAndRender( );
 	}
 
 	/**
@@ -65,7 +51,6 @@ public class PhysicsSystem extends System implements Updateable, Disposable {
 	 *
 	 * @param deltaTime The amount of time to step the world by.
 	 */
-	@Override
 	public void update( float deltaTime ) {
 		world.step( deltaTime, 6, 2 );
 
@@ -132,29 +117,11 @@ public class PhysicsSystem extends System implements Updateable, Disposable {
 		return world;
 	}
 
-	@Override
 	public void dispose( ) {
 		if ( world != null )
 			world.dispose( );
 
-		if ( rayHandler != null )
-			rayHandler.dispose( );
-
 		if( Global.DEBUG)
 			java.lang.System.out.println( "Physics system disposed" );
-	}
-
-	public RayHandler getRayHandler( ) {
-		return rayHandler;
-	}
-
-	@Override
-	public void entityAdded( GameObject e ) {
-
-	}
-
-	@Override
-	public void entityRemoved( GameObject e ) {
-
 	}
 }

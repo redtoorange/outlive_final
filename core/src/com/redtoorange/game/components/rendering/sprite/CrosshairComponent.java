@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
 import com.redtoorange.game.components.input.PlayerInputComponent;
+import com.redtoorange.game.engine.PostLightingDraw;
 import com.redtoorange.game.gameobject.GameObject;
 
 /**
@@ -15,7 +16,7 @@ import com.redtoorange.game.gameobject.GameObject;
  * @author - Andrew M.
  * @version - 29/Jan/2017
  */
-public class CrosshairComponent extends Component {
+public class CrosshairComponent extends Component implements PostLightingDraw {
 	private Sprite crossHair;
 	private PlayerInputComponent inputComponent;
 	private GameObject parent;

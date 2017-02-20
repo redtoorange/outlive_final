@@ -30,6 +30,7 @@ import com.redtoorange.game.gameobject.characters.Player;
 import com.redtoorange.game.gameobject.characters.enemies.Enemy;
 import com.redtoorange.game.gameobject.powerups.Ammo;
 import com.redtoorange.game.gameobject.powerups.Health;
+import com.redtoorange.game.systems.LightingSystem;
 import com.redtoorange.game.systems.PhysicsSystem;
 import com.redtoorange.game.ui.GunUI;
 
@@ -52,10 +53,14 @@ public class PlayScreen extends ScreenAdapter {
 	private SpriteBatch batch;
 	private GameMap gameMap;
 	private Player player;
+
 	private Box2DDebugRenderer debugRenderer;
 	private ContactManager contactManager;
 	private float cameraSmoothing = 0.1f;
+
 	private PhysicsSystem physicsSystem;
+	private LightingSystem lightingSystem;
+
 	private GunUI gunui;
 	private ConeLight flashLight;
 	private PointLight playerLight;
@@ -64,6 +69,7 @@ public class PlayScreen extends ScreenAdapter {
 	private Color minColor = new Color( 1, .5f, .5f, .25f );
 	private Color maxColor = new Color( 1, .5f, .5f, .75f );
 	private PerformanceCounter drawCounter = new PerformanceCounter( "Draw:" );
+
 	private SceneRoot sceneRoot = new SceneRoot( );
 
 	public PlayScreen( Core core ) {
@@ -88,6 +94,7 @@ public class PlayScreen extends ScreenAdapter {
 		gunui = new GunUI( );
 		physicsSystem = new PhysicsSystem( );
 		physicsSystem.getWorld( ).setContactListener( contactManager );
+		lightingSystem = new LightingSystem( physicsSystem.getWorld() );
 
 		camera = new OrthographicCamera( Global.WINDOW_WIDTH, Global.WINDOW_HEIGHT );
 		viewport = new ExtendViewport( Global.VIRTUAL_WIDTH, Global.VIRTUAL_HEIGHT, camera );
@@ -118,11 +125,11 @@ public class PlayScreen extends ScreenAdapter {
 
 		sceneRoot.addChild( player );
 
-		playerLight = new PointLight( physicsSystem.getRayHandler( ), 10, new Color( 1, 1, 1, .75f ), 1f, playerSpawn.x, playerSpawn.y );
-		houseLight = new PointLight( physicsSystem.getRayHandler( ), 100, new Color( 1, .5f, .5f, .75f ), 10f, 21, 3.5f );
+		playerLight = new PointLight( lightingSystem.getRayHandler( ), 10, new Color( 1, 1, 1, .75f ), 1f, playerSpawn.x, playerSpawn.y );
+		houseLight = new PointLight( lightingSystem.getRayHandler( ), 100, new Color( 1, .5f, .5f, .75f ), 10f, 21, 3.5f );
 		//houseLight.setSoft( false );
 
-		flashLight = new ConeLight( physicsSystem.getRayHandler( ), 100, new Color( 1, 1, 1, .75f ), 10f, playerSpawn.x, playerSpawn.y, 0, 30f );
+		flashLight = new ConeLight( lightingSystem.getRayHandler( ), 100, new Color( 1, 1, 1, .75f ), 10f, playerSpawn.x, playerSpawn.y, 0, 30f );
 
 		Filter f = new Filter( );
 		f.categoryBits = Global.LIGHT;
@@ -169,17 +176,18 @@ public class PlayScreen extends ScreenAdapter {
 
 		camera.update( );
 
-		gameMap.draw( batch );
+		gameMap.preLighting( batch );
 
 		batch.setProjectionMatrix( camera.combined );
+
 		batch.begin( );
-		sceneRoot.draw( batch );
+		sceneRoot.preLighting( batch );
 		batch.end( );
 
 		renderLighting( );
 
 		batch.begin( );
-		//engine.postLighting( batch );
+		sceneRoot.postLighting( batch );
 		batch.end( );
 
 		gunui.draw( batch );
@@ -203,7 +211,7 @@ public class PlayScreen extends ScreenAdapter {
 			flashLight.setPosition( flashlightPoisition );
 			playerLight.setPosition( player.getTransform( ).getPosition( ) );
 
-			physicsSystem.render( camera );
+			lightingSystem.draw( camera );
 		}
 	}
 
@@ -315,5 +323,9 @@ public class PlayScreen extends ScreenAdapter {
 			mouseWheelMovement( amount );
 			return true;
 		}
+	}
+
+	public LightingSystem getLightingSystem(){
+		return lightingSystem;
 	}
 }

@@ -97,7 +97,7 @@ public class GameMap extends GameObject {
 		}
 	}
 
-	public void draw( SpriteBatch batch ){
+	public void preLighting( SpriteBatch batch ){
 		mapRenderer.draw( batch );
 	}
 }

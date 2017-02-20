@@ -51,7 +51,7 @@ public class Bullet extends GameObject {
 		sm.update( deltaTime );
 	}
 
-	public void draw( SpriteBatch batch ) {
+	public void preLighting( SpriteBatch batch ) {
 		if ( alive ) {
 			spriteComponent.draw( batch );
 		}

@@ -87,7 +87,7 @@ public class Player extends GameObjectCharacter {
 	}
 
 	protected void initGunComponent( PlayScreen playScreen){
-		addComponent( new PlayerGunComponent( physicsSystem, this, playScreen ) );
+		addComponent( new PlayerGunComponent( physicsSystem, playScreen ) );
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import com.redtoorange.game.systems.sound.SoundEffect;
 public class PlayerGunComponent extends Component {
 	private final GunType type = GunType.REVOLVER;
 	private final int MAX_BULLETS = 6;
-	private final Player player;
+	private Player player;
 	private Inventory playerInventory;
 	private Texture bulletTexture;
 	private Array<Bullet> bulletController = new Array<Bullet>( );
@@ -58,15 +58,19 @@ public class PlayerGunComponent extends Component {
 	private float muzzleFlashTimer = 0.0f;
 	private float muzzelFlashDwell = 0.05f;
 
-	public PlayerGunComponent( PhysicsSystem physicsSystem, Player player, PlayScreen playScreen ) {
+	public PlayerGunComponent( PhysicsSystem physicsSystem, PlayScreen playScreen ) {
 		this.playScreen = playScreen;
-		this.player = player;
 		this.physicsSystem = physicsSystem;
+
+		muzzelFlash = new PointLight( playScreen.getLightingSystem().getRayHandler(), 10 );
+		muzzelFlash.setActive( false );
 	}
 
 	@Override
 	public void start( GameObject parent ) {
 		super.start( parent );
+
+		player = (Player ) parent;
 
 		initBullets( physicsSystem );
 		playerInventory = player.getInventoy( );
@@ -78,8 +82,7 @@ public class PlayerGunComponent extends Component {
 		sc = player.getComponent( SpriteComponent.class );
 		in= player.getComponent( PlayerInputComponent.class );
 
-		muzzelFlash = new PointLight( physicsSystem.getRayHandler(), 10 );
-		muzzelFlash.setActive( false );
+
 	}
 
 	public void update( float deltaTime ) {
@@ -175,7 +178,7 @@ public class PlayerGunComponent extends Component {
 
 	private void drawBullets( SpriteBatch batch ) {
 		for ( Bullet b : bulletController ) {
-			b.draw( batch );
+			b.preLighting( batch );
 		}
 	}
 
@@ -210,7 +213,9 @@ public class PlayerGunComponent extends Component {
 		bulletSprite.setOriginCenter( );
 
 		for ( int i = 0; i < MAX_BULLETS; i++ ) {
-			bulletController.add( new Bullet( player, new Sprite( bulletSprite ), physicsSystem, new Vector2( -1000, -1000 ), speed ) );
+			Bullet b =  new Bullet( player, new Sprite( bulletSprite ), physicsSystem, new Vector2( -1000, -1000 ), speed );
+			b.start( player);
+			bulletController.add( b );
 		}
 	}
 

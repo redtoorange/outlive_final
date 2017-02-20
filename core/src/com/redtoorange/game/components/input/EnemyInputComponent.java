@@ -56,8 +56,6 @@ public class EnemyInputComponent extends InputComponent{
 		}
 	}
 
-
-
 	private void romaingAI( float deltaTime ){
 		if( roamingTime > 0 ){
 			roamingTime -= deltaTime;
@@ -116,11 +114,6 @@ public class EnemyInputComponent extends InputComponent{
 
 	@Override
 	public void dispose( ) {
-
-	}
-
-	@Override
-	public void draw( SpriteBatch batch ) {
 
 	}
 }

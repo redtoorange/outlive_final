@@ -71,14 +71,4 @@ public class GunUI extends System {
 	public void setAmmoCount( int count ){
 		ammoLabel.setText( Integer.toString( count ) );
 	}
-
-	@Override
-	public void entityAdded( GameObject e ) {
-
-	}
-
-	@Override
-	public void entityRemoved( GameObject e ) {
-
-	}
 }

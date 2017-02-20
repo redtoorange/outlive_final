@@ -23,16 +23,11 @@ public class Enemy extends GameObjectCharacter {
 
 	public Enemy( GameObject parent, PhysicsSystem physicsSystem, Vector2 spawnPosition ) {
 		super( parent, spawnPosition, physicsSystem );
-	}
-
-	@Override
-	public void start( GameObject parent ) {
 		initSpriteComponent( );
 		initInputComponent();
 		initPhysicsComponent();
-
-		super.start( this );
 	}
+
 
 	protected Sprite loadEnemySprite( Vector2 spawnPoint ) {
 		Texture temp = new Texture( "zombie.png" );
