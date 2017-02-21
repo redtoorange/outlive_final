@@ -82,9 +82,6 @@ public abstract class GameObject implements Disposable {
 		children.removeValue( child, true );
 	}
 
-
-
-
 	public <T extends Component> T getComponent( Class<? extends Component> classOfInterest ) {
 		T obj = null;
 

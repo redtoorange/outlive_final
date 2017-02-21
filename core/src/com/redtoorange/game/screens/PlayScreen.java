@@ -30,9 +30,13 @@ import com.redtoorange.game.gameobject.characters.Player;
 import com.redtoorange.game.gameobject.characters.enemies.Enemy;
 import com.redtoorange.game.gameobject.powerups.Ammo;
 import com.redtoorange.game.gameobject.powerups.Health;
+import com.redtoorange.game.shaders.SHADER;
+import com.redtoorange.game.shaders.ShaderLoader;
 import com.redtoorange.game.systems.LightingSystem;
 import com.redtoorange.game.systems.PhysicsSystem;
 import com.redtoorange.game.ui.GunUI;
+
+import java.util.Arrays;
 
 /**
  * PlayScreen.java - Primary playing screen that the user will interact with.
@@ -137,6 +141,8 @@ public class PlayScreen extends ScreenAdapter {
 		Light.setGlobalContactFilter( f );
 
 		sceneRoot.start( null );
+
+		System.out.println( Arrays.toString( ShaderLoader.S.getShader( SHADER.TEST_SHADER ).getAttributes() ) );
 	}
 
 	private void initWalls() {
