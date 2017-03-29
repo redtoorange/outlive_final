@@ -18,7 +18,7 @@ import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
 import com.redtoorange.game.gameobject.Bullet;
 import com.redtoorange.game.gameobject.GameObject;
 import com.redtoorange.game.gameobject.characters.Player;
-import com.redtoorange.game.screens.PlayScreen;
+import com.redtoorange.game.states.MissionState;
 import com.redtoorange.game.systems.PhysicsSystem;
 import com.redtoorange.game.systems.sound.GunSoundManager;
 import com.redtoorange.game.systems.sound.SoundEffect;
@@ -45,7 +45,7 @@ public class PlayerGunComponent extends Component {
 	private int bulletsInGun = maxBulletsInGun;
 	private TextureRegion[] bulletTextures = new TextureRegion[ maxBulletsInGun + 1 ];
 	private boolean needsReload = false;
-	private PlayScreen playScreen;
+	private MissionState missionState;
 
 	private SpriteComponent sc;
 	private PlayerInputComponent in;
@@ -58,11 +58,11 @@ public class PlayerGunComponent extends Component {
 	private float muzzleFlashTimer = 0.0f;
 	private float muzzelFlashDwell = 0.05f;
 
-	public PlayerGunComponent( PhysicsSystem physicsSystem, PlayScreen playScreen ) {
-		this.playScreen = playScreen;
+	public PlayerGunComponent( PhysicsSystem physicsSystem, MissionState missionState) {
+		this.missionState = missionState;
 		this.physicsSystem = physicsSystem;
 
-		muzzelFlash = new PointLight( playScreen.getLightingSystem().getRayHandler(), 10 );
+		muzzelFlash = new PointLight( missionState.getLightingSystem().getRayHandler(), 10 );
 		muzzelFlash.setActive( false );
 	}
 
@@ -78,7 +78,7 @@ public class PlayerGunComponent extends Component {
 		for ( int i = 0; i <= maxBulletsInGun; i++ )
 			bulletTextures[ i ] = new TextureRegion( new Texture( "weapons/revolver/revolver_" + i + ".png" ) );
 
-		playScreen.getGunUI( ).swapCurrentImage( bulletTextures[ maxBulletsInGun ] );
+		missionState.getGunUI( ).swapCurrentImage( bulletTextures[ maxBulletsInGun ] );
 		sc = player.getComponent( SpriteComponent.class );
 		in= player.getComponent( PlayerInputComponent.class );
 
@@ -110,7 +110,7 @@ public class PlayerGunComponent extends Component {
 		if ( fireBullet && !needsReload && !reloading ) {
 			gsm.playSound( "gunshot" );
 			bulletsInGun--;
-			playScreen.getGunUI( ).swapCurrentImage( bulletTextures[ bulletsInGun ] );
+			missionState.getGunUI( ).swapCurrentImage( bulletTextures[ bulletsInGun ] );
 
 			if ( bulletsInGun <= 0 ) {
 				needsReload = true;
@@ -160,7 +160,7 @@ public class PlayerGunComponent extends Component {
 			playerInventory.consume( type, bullets );
 			bulletsInGun = bullets;
 
-			playScreen.getGunUI( ).swapCurrentImage( bulletTextures[ bulletsInGun ] );
+			missionState.getGunUI( ).swapCurrentImage( bulletTextures[ bulletsInGun ] );
 
 			if ( bulletsInGun > 0 ) {
 				SoundEffect se = gsm.getSoundEffect( "reloaded" );
@@ -172,7 +172,7 @@ public class PlayerGunComponent extends Component {
 				reloading = true;
 			}
 
-			playScreen.getGunUI().setAmmoCount( playerInventory.remaining( type ) );
+			missionState.getGunUI().setAmmoCount( playerInventory.remaining( type ) );
 		}
 	}
 

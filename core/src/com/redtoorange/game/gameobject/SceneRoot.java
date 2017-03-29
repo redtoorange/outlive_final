@@ -3,7 +3,7 @@ package com.redtoorange.game.gameobject;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * SceneRoot.java - DESCRIPTION
+ * SceneRoot.java - Designed to be the top most node in the scene.
  *
  * @author - Andrew M.
  * @version - 19/Feb/2017

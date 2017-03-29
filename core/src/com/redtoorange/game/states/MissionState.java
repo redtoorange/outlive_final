@@ -1,4 +1,4 @@
-package com.redtoorange.game.screens;
+package com.redtoorange.game.states;
 
 import box2dLight.ConeLight;
 import box2dLight.Light;
@@ -34,17 +34,17 @@ import com.redtoorange.game.shaders.SHADER;
 import com.redtoorange.game.shaders.ShaderLoader;
 import com.redtoorange.game.systems.LightingSystem;
 import com.redtoorange.game.systems.PhysicsSystem;
-import com.redtoorange.game.ui.GunUI;
+import com.redtoorange.game.ui.missionui.GunUI;
 
 import java.util.Arrays;
 
 /**
- * PlayScreen.java - Primary playing screen that the user will interact with.
+ * MissionState.java - Primary playing screen that the user will interact with.
  *
  * @author - Andrew M.
  * @version - 13/Jan/2017
  */
-public class PlayScreen extends ScreenAdapter {
+public class MissionState extends ScreenAdapter {
 	private static final int ENEMY_COUNT = 100;
 	private static final int HEALTH_COUNT = 25;
 	private static final int AMMO_COUNT = 25;
@@ -76,7 +76,7 @@ public class PlayScreen extends ScreenAdapter {
 
 	private SceneRoot sceneRoot = new SceneRoot( );
 
-	public PlayScreen( Core core ) {
+	public MissionState(Core core ) {
 		this.core = core;
 	}
 
@@ -185,7 +185,6 @@ public class PlayScreen extends ScreenAdapter {
 		gameMap.preLighting( batch );
 
 		batch.setProjectionMatrix( camera.combined );
-
 		batch.begin( );
 		sceneRoot.preLighting( batch );
 		batch.end( );
@@ -256,7 +255,7 @@ public class PlayScreen extends ScreenAdapter {
 		}
 
 		if ( Global.DEBUG )
-			System.out.println( "PlayScreen disposed" );
+			System.out.println( "MissionState disposed" );
 	}
 
 	public void setPlayer( Player player ) {

@@ -4,17 +4,17 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.redtoorange.game.screens.PlayScreen;
+import com.redtoorange.game.states.MissionState;
 
 /**
- * Core.java - Core game class that handles the different screens.
+ * Core.java - Core game class that handles the different states.
  *
  * @author - Andrew M.
  * @version - 13/Jan/2017
  */
 public class Core extends Game {
 	private FPSLogger logger = new FPSLogger( );
-	private PlayScreen playScreen;
+	private MissionState missionState;
 	private boolean playing = true;
 
 	public Core( boolean debugging ) {
@@ -26,8 +26,8 @@ public class Core extends Game {
 	@Override
 	public void create( ) {
 
-		playScreen = new PlayScreen( this );
-		setScreen( playScreen );
+		missionState = new MissionState( this );
+		setScreen(missionState);
 	}
 
 	@Override
@@ -62,12 +62,12 @@ public class Core extends Game {
 	}
 
 	public void update( ) {
-		playScreen.update( Gdx.graphics.getDeltaTime( ) );
+		missionState.update( Gdx.graphics.getDeltaTime( ) );
 	}
 
 	public void draw( ) {
 		Global.clearScreen( );
-		playScreen.draw( );
+		missionState.draw( );
 	}
 
 	@Override

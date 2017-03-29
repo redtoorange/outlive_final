@@ -13,7 +13,7 @@ import com.redtoorange.game.components.physics.character.PlayerPhysicsComponent;
 import com.redtoorange.game.components.rendering.sprite.CrosshairComponent;
 import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
 import com.redtoorange.game.gameobject.GameObject;
-import com.redtoorange.game.screens.PlayScreen;
+import com.redtoorange.game.states.MissionState;
 import com.redtoorange.game.systems.PhysicsSystem;
 
 /**
@@ -27,14 +27,14 @@ public class Player extends GameObjectCharacter {
 	private OrthographicCamera camera;
 	private Inventory ammo = new Inventory( );
 
-	private PlayScreen playScreen;
+	private MissionState missionState;
 	private SpriteComponent spriteComponent;
 
-	public Player( GameObject parent,  OrthographicCamera camera, PlayScreen playScreen, PhysicsSystem physicsSystem, Vector2 position ) {
+	public Player(GameObject parent, OrthographicCamera camera, MissionState missionState, PhysicsSystem physicsSystem, Vector2 position ) {
 		super( parent, position, physicsSystem );
 
 		this.camera = camera;
-		this.playScreen = playScreen;
+		this.missionState = missionState;
 
 		maxHealth  = 10;
 		health = 10;
@@ -46,7 +46,7 @@ public class Player extends GameObjectCharacter {
 		initSpriteComponent( );
 		initInputComponent( );
 		initPhysicsComponent( );
-		initGunComponent(playScreen);
+		initGunComponent(missionState);
 
 		super.start( parent );
 	}
@@ -57,7 +57,7 @@ public class Player extends GameObjectCharacter {
 
 	public void pickupAmmo( GunType type, int amount ) {
 		ammo.pickup( type, amount );
-		playScreen.getGunUI().setAmmoCount( ammo.remaining( type ) );
+		missionState.getGunUI().setAmmoCount( ammo.remaining( type ) );
 	}
 
 	public void pickupHealth( int amount) {
@@ -74,7 +74,7 @@ public class Player extends GameObjectCharacter {
 	@Override
 	protected void die( ) {
 		Gdx.app.exit();
-		playScreen.setPlayer( null );
+		missionState.setPlayer( null );
 	}
 
 	@Override
@@ -86,8 +86,8 @@ public class Player extends GameObjectCharacter {
 		addComponent( new CrosshairComponent( this ) );
 	}
 
-	protected void initGunComponent( PlayScreen playScreen){
-		addComponent( new PlayerGunComponent( physicsSystem, playScreen ) );
+	protected void initGunComponent( MissionState missionState){
+		addComponent( new PlayerGunComponent( physicsSystem, missionState) );
 	}
 
 	@Override

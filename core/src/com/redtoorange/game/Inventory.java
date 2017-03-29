@@ -1,12 +1,14 @@
 package com.redtoorange.game;
 
+import java.io.Serializable;
+
 /**
- * ${FILE_NAME}.java - Description
+ * Inventory.java - Description
  *
  * @author
  * @version 23/Jan/2017
  */
-public class Inventory {
+public class Inventory implements Serializable {
 	private int[] ammoAmounts = new int[ GunType.TOTAL_GUNS.getValue( ) ];
 
 	public Inventory( ) {

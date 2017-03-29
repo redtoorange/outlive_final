@@ -1,4 +1,4 @@
-package com.redtoorange.game.ui;
+package com.redtoorange.game.ui.missionui;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,11 +12,10 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.VisUI;
 import com.redtoorange.game.Global;
-import com.redtoorange.game.gameobject.GameObject;
 import com.redtoorange.game.systems.System;
 
 /**
- * ${FILE_NAME}.java - Description
+ * GunUI.java - User Interface for the Ammunition counter.
  *
  * @author
  * @version 23/Jan/2017
