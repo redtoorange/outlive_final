@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" nextobjectid="14">
  <properties>
-  <property name="ammo" type="int" value="10"/>
-  <property name="enemy" type="int" value="20"/>
-  <property name="health" type="int" value="10"/>
+  <property name="ammo" type="int" value="30"/>
+  <property name="enemy" type="int" value="100"/>
+  <property name="health" type="int" value="30"/>
+  <property name="height" type="int" value="100"/>
+  <property name="width" type="int" value="100"/>
  </properties>
- <tileset firstgid="1" name="terrain" tilewidth="16" tileheight="16" spacing="2" tilecount="28" columns="28">
-  <image source="../atlas/terrain.png" width="512" height="32"/>
- </tileset>
+ <tileset firstgid="1" source="../atlas/terrain.tsx"/>
  <layer name="FloorTiles" width="100" height="100">
   <data encoding="csv">
 2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
@@ -229,6 +229,6 @@
   <object id="13" x="1584" y="16" width="16" height="1568"/>
  </objectgroup>
  <objectgroup name="playerspawn">
-  <object id="5" x="192" y="1376" width="16" height="16"/>
+  <object id="5" x="320" y="1520" width="16" height="16"/>
  </objectgroup>
 </map>

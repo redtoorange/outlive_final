@@ -14,7 +14,7 @@ import com.redtoorange.game.systems.PhysicsSystem;
 public class Enemy extends GameObjectCharacter {
 	protected Player player;
 	private SpriteComponent spriteComponent;
-	private int damage = 5;
+	private int damage = 1;
 
 	public Enemy( GameObject parent, PhysicsSystem physicsSystem, Vector2 spawnPosition, Player player ) {
 		this( parent, physicsSystem, spawnPosition );

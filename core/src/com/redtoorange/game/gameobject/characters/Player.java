@@ -24,90 +24,99 @@ import com.redtoorange.game.systems.PhysicsSystem;
  */
 
 public class Player extends GameObjectCharacter {
-	private OrthographicCamera camera;
-	private Inventory ammo = new Inventory( );
+    private OrthographicCamera camera;
+    private Inventory ammo = new Inventory();
 
-	private MissionState missionState;
-	private SpriteComponent spriteComponent;
+    private MissionState missionState;
+    private SpriteComponent spriteComponent;
 
-	public Player(GameObject parent, OrthographicCamera camera, MissionState missionState, PhysicsSystem physicsSystem, Vector2 position ) {
-		super( parent, position, physicsSystem );
+    public Player( GameObject parent, OrthographicCamera camera, MissionState missionState, PhysicsSystem physicsSystem, Vector2 position ) {
+        super( parent, position, physicsSystem );
 
-		this.camera = camera;
-		this.missionState = missionState;
+        this.camera = camera;
+        this.missionState = missionState;
 
-		maxHealth  = 10;
-		health = 10;
-	}
+        maxHealth = 10;
+        health = 10;
+        missionState.getHealthUI().setHealthAmount( health, maxHealth );
+    }
 
-	@Override
-	public void start( GameObject parent ) {
-		initCrosshair( );
-		initSpriteComponent( );
-		initInputComponent( );
-		initPhysicsComponent( );
-		initGunComponent(missionState);
+    @Override
+    public void start( GameObject parent ) {
+        initCrosshair();
+        initSpriteComponent();
+        initInputComponent();
+        initPhysicsComponent();
+        initGunComponent( missionState );
 
-		super.start( parent );
-	}
+        super.start( parent );
+    }
 
-	public void update( float deltaTime ) {
-		super.update( deltaTime );
-	}
+    public void update( float deltaTime ) {
+        super.update( deltaTime );
+    }
 
-	public void pickupAmmo( GunType type, int amount ) {
-		ammo.pickup( type, amount );
-		missionState.getGunUI().setAmmoCount( ammo.remaining( type ) );
-	}
+    public void pickupAmmo( GunType type, int amount ) {
+        ammo.pickup( type, amount );
+        missionState.getGunUI().setAmmoCount( ammo.remaining( type ) );
+    }
 
-	public void pickupHealth( int amount) {
-		health += amount;
+    public void pickupHealth( int amount ) {
+        health += amount;
 
-		if(health > maxHealth)
-			health = maxHealth;
-	}
+        if ( health > maxHealth )
+            health = maxHealth;
 
-	public Inventory getInventoy( ) {
-		return ammo;
-	}
+        missionState.getHealthUI().setHealthAmount( health, maxHealth );
+    }
 
-	@Override
-	protected void die( ) {
-		Gdx.app.exit();
-		missionState.setPlayer( null );
-	}
+    public Inventory getInventoy() {
+        return ammo;
+    }
 
-	@Override
-	public float getRotation( ) {
-		return spriteComponent.getRotation();
-	}
+    @Override
+    protected void die() {
+        Gdx.app.exit();
+        missionState.setPlayer( null );
+    }
 
-	protected void initCrosshair( ) {
-		addComponent( new CrosshairComponent( this ) );
-	}
+    @Override
+    public float getRotation() {
+        return spriteComponent.getRotation();
+    }
 
-	protected void initGunComponent( MissionState missionState){
-		addComponent( new PlayerGunComponent( physicsSystem, missionState) );
-	}
+    protected void initCrosshair() {
+        addComponent( new CrosshairComponent( this ) );
+    }
 
-	@Override
-	protected void initSpriteComponent( ) {
-		Texture temp = new Texture( "player.png" );
+    protected void initGunComponent( MissionState missionState ) {
+        addComponent( new PlayerGunComponent( physicsSystem, missionState ) );
+    }
 
-		Sprite sprite = new Sprite( temp );
-		sprite.setSize( 1f, 1f );
+    @Override
+    protected void initSpriteComponent() {
+        Texture temp = new Texture( "player.png" );
 
-		spriteComponent = new SpriteComponent( sprite );
-		addComponent( spriteComponent );
-	}
+        Sprite sprite = new Sprite( temp );
+        sprite.setSize( 1f, 1f );
 
-	@Override
-	protected void initInputComponent() {
-		addComponent( new PlayerInputComponent( this, camera ) );
-	}
+        spriteComponent = new SpriteComponent( sprite );
+        addComponent( spriteComponent );
+    }
 
-	@Override
-	protected void initPhysicsComponent() {
-		addComponent( new PlayerPhysicsComponent( physicsSystem, this ) );
-	}
+    @Override
+    public void takeDamage( int amount ) {
+        super.takeDamage( amount );
+        missionState.getHealthUI().setHealthAmount( health, maxHealth );
+    }
+
+    @Override
+    protected void initInputComponent() {
+        addComponent( new PlayerInputComponent( this, camera ) );
+    }
+
+    @Override
+    protected void initPhysicsComponent() {
+        addComponent( new PlayerPhysicsComponent( physicsSystem, this ) );
+    }
 }
