@@ -4,16 +4,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.redtoorange.game.Global;
 import com.redtoorange.game.components.Component;
 import com.redtoorange.game.components.TransformComponent;
 import com.redtoorange.game.engine.PostLightingDraw;
+import com.redtoorange.game.systems.Global;
 
 /**
- * GameObject.java - DESCRIPTION
+ * GameObject.java -
  *
- * @author - Andrew M.
- * @version - 14/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public abstract class GameObject implements Disposable {
 	protected GameObject parent;

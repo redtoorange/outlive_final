@@ -4,46 +4,32 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.VisUI;
-import com.redtoorange.game.Global;
+import com.redtoorange.game.systems.Global;
 import com.redtoorange.game.systems.System;
 
 /**
- * GunUI.java - User Interface for the Ammunition counter.
+ * HealthUI.java -
  *
- * @author
- * @version 23/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class HealthUI extends System {
-    private enum HealthState {
-        HIGH, MEDIUM, LOW
-    }
-
     private HealthState currentState = HealthState.HIGH;
     private OrthographicCamera uiCamera;
     private Viewport uiViewport;
     private Table rootTable;
     private Stage uiStage;
     private TextureAtlas healthBars;
-
-    private int maxHealth = 0;
     private int currentHealth = 0;
-
     private Array< Image > healthMeter = new Array< Image >();
-
-    private Image currentImage;
-    private Label healthLabel;
-
-    private TextureRegionDrawable regionDrawable = new TextureRegionDrawable();
 
     public HealthUI() {
         init();
@@ -69,15 +55,10 @@ public class HealthUI extends System {
         uiStage.addActor( rootTable );
         rootTable.setFillParent( true );
         rootTable.left().top();
-//        healthLabel = new Label( "0", VisUI.getSkin() );
-//        healthLabel.setSize( 100f, 100f );
-//        rootTable.add( healthLabel ).left().top().size( 100f, 100f ).expandX().row();
-//        currentImage = new Image( healthBars.findRegion( "highHealth" ) );
 
         for ( int i = 0; i < 20; i++ ) {
             healthMeter.add( new Image( healthBars.findRegion( "highHealth" ) ) );
         }
-//        rootTable.add( currentImage ).top().left().expand().size( 100f, 100f );
     }
 
     public void resize( int width, int height ) {
@@ -85,13 +66,8 @@ public class HealthUI extends System {
         uiCamera.update();
     }
 
-    public void swapCurrentImage( TextureRegion region ) {
-        regionDrawable.setRegion( region );
-    }
-
     public void setHealthAmount( int count, int maxHealth ) {
         this.currentHealth = count;
-        this.maxHealth = maxHealth;
 
         if ( .66 <= ( ( float ) currentHealth / ( float ) maxHealth ) ) {
             if ( currentState != HealthState.HIGH ) {
@@ -116,19 +92,16 @@ public class HealthUI extends System {
             }
         }
 
-        //clear UI
-//        for ( int i = 0; i < healthMeter.size; i++ ) {
-//            if ( rootTable.getChildren().contains( healthMeter.get( i ), true ) )
-//                rootTable.removeActor( healthMeter.get( i ) );
-//        }
-
         rootTable.clearChildren();
 
         //Add the bars back
         for ( int i = 0; i < count; i++ ) {
             rootTable.add( healthMeter.get( i ) ).top().left().size( 25f, 100f );
         }
+    }
 
-//        healthLabel.setText( Integer.toString( count ) );
+
+    private enum HealthState {
+        HIGH, MEDIUM, LOW
     }
 }

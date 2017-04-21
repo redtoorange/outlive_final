@@ -5,12 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.redtoorange.game.states.MissionState;
+import com.redtoorange.game.systems.Global;
 
 /**
  * Core.java - Core game class that handles the different states.
  *
- * @author - Andrew M.
- * @version - 13/Jan/2017
+ *
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class Core extends Game {
 	private FPSLogger logger = new FPSLogger( );

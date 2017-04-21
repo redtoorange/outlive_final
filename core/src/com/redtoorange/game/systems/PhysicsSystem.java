@@ -1,24 +1,17 @@
 package com.redtoorange.game.systems;
 
-import box2dLight.RayHandler;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
-import com.redtoorange.game.Global;
-import com.redtoorange.game.engine.Updateable;
-import com.redtoorange.game.gameobject.GameObject;
 
 /**
  * PhysicsSystem.java - Box2D Physics World encapsulation.  Will handle adding and removal of bodies
  * gracefully while still allowing the World to step.
  *
- * @author - Andrew M.
- * @version - 20/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class PhysicsSystem extends System {
 	private World world;
@@ -121,7 +114,18 @@ public class PhysicsSystem extends System {
 		if ( world != null )
 			world.dispose( );
 
+		deadBodies.clear();
+		newBodies.clear();
+
+		createBodies = false;
+		cullBodies = false;
+
 		if( Global.DEBUG)
 			java.lang.System.out.println( "Physics system disposed" );
+	}
+
+	public void clearAllBodies(){
+		world.getBodies( deadBodies );
+		cullBodies = true;
 	}
 }

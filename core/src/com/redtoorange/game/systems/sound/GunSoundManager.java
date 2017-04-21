@@ -1,10 +1,10 @@
 package com.redtoorange.game.systems.sound;
 
 /**
- * GunSoundManager.java - DESCRIPTION
+ * GunSoundManager.java -
  *
- * @author - Andrew M.
- * @version - 23/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class GunSoundManager extends SoundManager {
 	public GunSoundManager( ) {

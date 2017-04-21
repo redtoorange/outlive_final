@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
- * ${FILE_NAME}.java - Description
+ * LightingSystem.java -
  *
- * @author
- * @version 20/Feb/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class LightingSystem {
 	private RayHandler rayHandler;

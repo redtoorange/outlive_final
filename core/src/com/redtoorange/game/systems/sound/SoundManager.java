@@ -3,10 +3,10 @@ package com.redtoorange.game.systems.sound;
 import com.badlogic.gdx.utils.ArrayMap;
 
 /**
- * ${FILE_NAME}.java - Description
+ * SoundManager.java -
  *
- * @author
- * @version 23/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class SoundManager {
 	protected ArrayMap<String, SoundEffect> sounds;
@@ -33,4 +33,7 @@ public class SoundManager {
 	public SoundEffect getSoundEffect( String name ) {
 		return sounds.get( name );
 	}
+
+
+
 }

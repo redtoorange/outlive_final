@@ -18,10 +18,7 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.VisUI;
-import com.redtoorange.game.ContactManager;
 import com.redtoorange.game.Core;
-import com.redtoorange.game.Global;
-import com.redtoorange.game.PerformanceCounter;
 import com.redtoorange.game.components.rendering.sprite.SpriteComponent;
 import com.redtoorange.game.factories.Box2DFactory;
 import com.redtoorange.game.gameobject.GameMap;
@@ -30,21 +27,23 @@ import com.redtoorange.game.gameobject.characters.Player;
 import com.redtoorange.game.gameobject.characters.enemies.Enemy;
 import com.redtoorange.game.gameobject.powerups.Ammo;
 import com.redtoorange.game.gameobject.powerups.Health;
-import com.redtoorange.game.systems.LightingSystem;
-import com.redtoorange.game.systems.PhysicsSystem;
+import com.redtoorange.game.systems.*;
 import com.redtoorange.game.ui.missionui.GunUI;
 import com.redtoorange.game.ui.missionui.HealthUI;
+
+import java.lang.System;
 
 /**
  * MissionState.java - Primary playing screen that the user will interact with.
  *
- * @author - Andrew M.
- * @version - 13/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class MissionState extends ScreenAdapter {
-    private String[] levelNames = { "level_1.tmx", "level_2.tmx", "level_3.tmx" };
     //    boolean fading = true;
     boolean running = true;
+    private int currentLevel = 0;
+    private String[] levelNames = { "level_1.tmx", "level_2.tmx", "level_3.tmx" };
     private Core core;
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -64,13 +63,9 @@ public class MissionState extends ScreenAdapter {
 
     private ConeLight flashLight;
     private PointLight playerLight;
-    private PointLight houseLight;
-    private PerformanceCounter updateCounter = new PerformanceCounter( "Update:" );
-    private Color minColor = new Color( 1, .5f, .5f, .25f );
-    private Color maxColor = new Color( 1, .5f, .5f, .75f );
-    private PerformanceCounter drawCounter = new PerformanceCounter( "Draw:" );
 
-    private SceneRoot sceneRoot = new SceneRoot();
+    private SceneRoot sceneRoot;
+    private int remainingEnemies = 0;
 
     public MissionState( Core core ) {
         this.core = core;
@@ -88,52 +83,19 @@ public class MissionState extends ScreenAdapter {
         Gdx.input.setCursorPosition( Global.WINDOW_WIDTH / 2, Global.WINDOW_HEIGHT / 2 );
         Gdx.input.setInputProcessor( new mouseProcessor() );
 
-        debugRenderer = new Box2DDebugRenderer();
-        contactManager = new ContactManager();
-
         gunui = new GunUI();
         healthui = new HealthUI();
-
-        physicsSystem = new PhysicsSystem();
-        physicsSystem.getWorld().setContactListener( contactManager );
-        lightingSystem = new LightingSystem( physicsSystem.getWorld() );
 
         camera = new OrthographicCamera( Global.WINDOW_WIDTH, Global.WINDOW_HEIGHT );
         viewport = new ExtendViewport( Global.VIRTUAL_WIDTH, Global.VIRTUAL_HEIGHT, camera );
         batch = new SpriteBatch();
 
-        gameMap = new GameMap( sceneRoot, "tilemaps/" + levelNames[1], batch, camera, 1 / 16f );
-
-        Vector2 playerSpawn = new Vector2();
-        Rectangle exclusionZone = new Rectangle( playerSpawn.x, playerSpawn.y, 2, 2 );
-        gameMap.playerSpawns.first().getCenter( playerSpawn );
-
-        player = new Player( sceneRoot, camera, this, physicsSystem, playerSpawn );
-//        System.out.println( playerSpawn );
-
-        initWalls();
-
-        loadObjects( exclusionZone );
-
-        sceneRoot.addChild( player );
-
-        playerLight = new PointLight( lightingSystem.getRayHandler(), 10, new Color( 1, 1, 1, .75f ), 1f, playerSpawn.x, playerSpawn.y );
-        houseLight = new PointLight( lightingSystem.getRayHandler(), 100, new Color( 1, .5f, .5f, .75f ), 10f, 21, 3.5f );
-        //houseLight.setSoft( false );
-
-        flashLight = new ConeLight( lightingSystem.getRayHandler(), 100, new Color( 1, 1, 1, .75f ), 10f, playerSpawn.x, playerSpawn.y, 0, 30f );
-
-        Filter f = new Filter();
-        f.categoryBits = Global.LIGHT;
-        f.maskBits = Global.ENEMY | Global.WALL;
-        Light.setGlobalContactFilter( f );
-
-        sceneRoot.start( null );
-
-//        System.out.println( Arrays.toString( ShaderLoader.S.getShader( SHADER.TEST_SHADER ).getAttributes() ) );
+        loadLevel( currentLevel );
     }
 
     private void loadObjects( Rectangle exclusionZone ) {
+        remainingEnemies = gameMap.getEnemyCount();
+
         for ( int i = 0; i < gameMap.getEnemyCount(); i++ ) {
             Vector2 point = new Vector2( MathUtils.random( 2, gameMap.getMaxWidth() - 1 ), MathUtils.random( 2, gameMap.getMaxHeight() - 1 ) );
 
@@ -162,8 +124,61 @@ public class MissionState extends ScreenAdapter {
         }
     }
 
-    private void loadLevel() {
+    private void loadLevel( int levelNumber ) {
+//        if( physicsSystem != null )
+//            physicsSystem.dispose();
 
+        debugRenderer = new Box2DDebugRenderer();
+        contactManager = new ContactManager();
+        physicsSystem = new PhysicsSystem();
+        physicsSystem.getWorld().setContactListener( contactManager );
+        lightingSystem = new LightingSystem( physicsSystem.getWorld() );
+
+        if ( sceneRoot != null )
+            sceneRoot.dispose();
+
+        sceneRoot = new SceneRoot();
+
+        if ( gameMap != null )
+            gameMap.dispose();
+
+        gameMap = new GameMap( sceneRoot, "tilemaps/" + levelNames[levelNumber], batch, camera, 1 / 16f );
+
+        Vector2 playerSpawn = new Vector2();
+        Rectangle exclusionZone = new Rectangle( playerSpawn.x, playerSpawn.y, 2, 2 );
+        gameMap.playerSpawns.first().getCenter( playerSpawn );
+
+        initPlayer( playerSpawn );
+        initWalls();
+        loadObjects( exclusionZone );
+
+        sceneRoot.addChild( player );
+        playerLight = new PointLight( lightingSystem.getRayHandler(), 10, new Color( 1, 1, 1, .75f ), 1f, player.getTransform().getPosition().x, player.getTransform().getPosition().y );
+        flashLight = new ConeLight( lightingSystem.getRayHandler(), 100, new Color( 1, 1, 1, .75f ), 10f, player.getTransform().getPosition().x, player.getTransform().getPosition().y, 0, 30f );
+
+
+        Filter f = new Filter();
+        f.categoryBits = Global.LIGHT;
+        f.maskBits = Global.ENEMY | Global.WALL;
+        Light.setGlobalContactFilter( f );
+
+        sceneRoot.start( null );
+    }
+
+    private void initPlayer( Vector2 playerSpawn ) {
+        int currentHealth = 10;
+        int maxHealth = 10;
+        int rounds = 6;
+
+        if(player != null){
+            currentHealth = player.getHealth();
+            maxHealth = player.getMaxHealth();
+            rounds = player.getInventoy().remaining( GunType.REVOLVER );
+        }
+
+        player = new Player( sceneRoot, camera, this, physicsSystem, playerSpawn );
+        player.setHealth( currentHealth, maxHealth );
+        player.setAmmo( rounds );
     }
 
     private void initWalls() {
@@ -171,6 +186,7 @@ public class MissionState extends ScreenAdapter {
             Filter w = new Filter();
             w.groupIndex = Global.WALL;
             w.maskBits = Global.ENEMY | Global.PLAYER | Global.LIGHT | Global.BULLET_LIVE;
+
             Body b = Box2DFactory.createStaticBody( physicsSystem, r );
             b.getFixtureList().first().setFilterData( w );
             b.setUserData( r );
@@ -184,7 +200,6 @@ public class MissionState extends ScreenAdapter {
         if ( !running )
             return;
 
-        updateCounter.start();
         physicsSystem.update( deltaTime );
 
         sceneRoot.update( deltaTime );
@@ -200,8 +215,6 @@ public class MissionState extends ScreenAdapter {
     public void draw() {
         if ( !running )
             return;
-
-        drawCounter.start();
 
         camera.update();
 
@@ -220,12 +233,9 @@ public class MissionState extends ScreenAdapter {
 
         gunui.draw( batch );
         healthui.draw( batch );
-        //System.out.println( drawCounter );
 
         if ( Global.DEBUG )
             debugRenderer.render( physicsSystem.getWorld(), camera.combined );
-
-        //System.out.println( drawCounter );
     }
 
     private void renderLighting() {
@@ -263,7 +273,6 @@ public class MissionState extends ScreenAdapter {
 
         if ( physicsSystem != null ) {
             flashLight = null;
-            houseLight = null;
             playerLight = null;
             physicsSystem.dispose();
             physicsSystem = null;
@@ -316,6 +325,18 @@ public class MissionState extends ScreenAdapter {
         viewport.setWorldHeight( h );
     }
 
+    public LightingSystem getLightingSystem() {
+        return lightingSystem;
+    }
+
+    public void enemyKilled() {
+        remainingEnemies--;
+        if ( remainingEnemies == 0 ) {
+            currentLevel++;
+            loadLevel( currentLevel );
+        }
+    }
+
     private class mouseProcessor implements InputProcessor {
         @Override
         public boolean keyDown( int keycode ) {
@@ -357,9 +378,5 @@ public class MissionState extends ScreenAdapter {
             mouseWheelMovement( amount );
             return true;
         }
-    }
-
-    public LightingSystem getLightingSystem() {
-        return lightingSystem;
     }
 }

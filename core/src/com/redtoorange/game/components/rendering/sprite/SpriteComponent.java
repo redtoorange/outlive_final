@@ -5,123 +5,109 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.redtoorange.game.Global;
 import com.redtoorange.game.gameobject.GameObject;
+import com.redtoorange.game.systems.Global;
 
 /**
- * SpriteComponent.java - A Render Component that encapsulates a Sprite to allow easy movement and boudning
- * calculations.
+ * SpriteComponent.java - The primary visual component of GameObjects in the engine.  Anything with a SpriteComponent
+ * will be drawn on the screen.  The sprite's size, position and rotation are set by other components, including the
+ * input and physics component, depending on what the SpriteComponent is attached to.
  *
- * @author - Andrew M.
- * @version - 20/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class SpriteComponent extends RenderComponent {
-	private Sprite sprite;
+    private Sprite sprite;
 
-	/**
-	 * A clone of this is stored inside the component.
-	 *
-	 * @param sprite Sprite that should be cloned.
-	 */
-	public SpriteComponent( Sprite sprite ) {
-		this.sprite = new Sprite( sprite );
-	}
+    /** @param sprite Sprite that should be cloned into this component. */
+    public SpriteComponent( Sprite sprite ) {
+        this.sprite = new Sprite( sprite );
+    }
 
-	@Override
-	public void start( GameObject owner ) {
-		super.start( owner );
+    /** @param owner The owner of this spriteComponent. */
+    @Override
+    public void start( GameObject owner ) {
+        super.start( owner );
 
-		Vector2 pos = owner.getTransform( ).getPosition( );
-		this.sprite.setCenter( pos.x, pos.y );
-		this.sprite.setOriginCenter( );
-	}
+        Vector2 pos = owner.getTransform().getPosition();
+        this.sprite.setCenter( pos.x, pos.y );
+        this.sprite.setOriginCenter();
+    }
 
-	public void setColor( float r, float g, float b, float a ) {
-		sprite.setColor( new Color( r, g, b, a ) );
-	}
+    /**
+     * Set the tint of the Sprite.
+     *
+     * @param red   0-1 * 255 red value.
+     * @param green 0-1 * 255 green value.
+     * @param blue  0-1 * 255 blue value.
+     * @param alpha 0-1% alpha value.
+     */
+    public void setColor( float red, float green, float blue, float alpha ) {
+        sprite.setColor( new Color( red, green, blue, alpha ) );
+    }
 
-	@Override
-	public void draw( SpriteBatch batch ) {
-		setCenter( owner.getTransform( ).getPosition( ) );
-		sprite.draw( batch );
-	}
+    /** @param batch The batch to draw this component to. */
+    @Override
+    public void draw( SpriteBatch batch ) {
+        setCenter( owner.getTransform().getPosition() );
+        sprite.draw( batch );
+    }
 
-	public Sprite getSprite() {
-		return sprite;
-	}
+    /** @return the sprite stored inside of this component. */
+    public Sprite getSprite() {
+        return sprite;
+    }
 
-	/**
-	 * Get the Sprite's current rotation value.
-	 *
-	 * @return A float representing the rotation of the sprite inputComponent degrees
-	 */
-	public float getRotation() {
-		return sprite.getRotation( );
-	}
+    /** @return A float representing the rotation of the sprite inputComponent degrees. */
+    public float getRotation() {
+        return sprite.getRotation();
+    }
 
-	/**
-	 * Set the Sprite's rotation inputComponent degrees.
-	 *
-	 * @param rotation the degree representation the Sprite should be set to
-	 */
-	public void setRotation( float rotation ) {
-		sprite.setRotation( rotation );
-	}
+    /** @param rotation the degree representation the Sprite should be set to. */
+    public void setRotation( float rotation ) {
+        sprite.setRotation( rotation );
+    }
 
-	/**
-	 * Helper method to allow the grabbing of a new Vector2 reference to the center of the Sprite.
-	 *
-	 * @return The Center of the Sprite
-	 */
-	public Vector2 getCenter() {
-		return new Vector2( getCenterX( ), getCenterY( ) );
-	}
+    /** @return The Center of the Sprite. */
+    public Vector2 getCenter() {
+        return new Vector2( getCenterX(), getCenterY() );
+    }
 
-	/**
-	 * Set the center of the Sprite, this does NOT set the upper left position like a normal position.set()
-	 *
-	 * @param center Where the center of the sprite should be preLighting.
-	 */
-	public void setCenter( Vector2 center ) {
-		sprite.setCenter( center.x, center.y );
-	}
+    /** @param center Where the center of the sprite should be preLighting. */
+    public void setCenter( Vector2 center ) {
+        sprite.setCenter( center.x, center.y );
+    }
 
-	public float getCenterX() {
-		return ( sprite.getX( ) + ( sprite.getWidth( ) / 2f ) );
-	}
+    /** @return the sprite's center x position. */
+    public float getCenterX() {
+        return ( sprite.getX() + ( sprite.getWidth() / 2f ) );
+    }
 
-	public void setCenterX( float x ) {
-		sprite.setCenter( x, getCenterY( ) );
-	}
+    /** @return the sprite's center y position. */
+    public float getCenterY() {
+        return ( sprite.getY() + ( sprite.getHeight() / 2f ) );
+    }
 
-	public float getCenterY() {
-		return ( sprite.getY( ) + ( sprite.getHeight( ) / 2f ) );
-	}
 
-	public void setCenterY( float y ) {
-		sprite.setCenter( getCenterX( ), y );
-	}
+    /** @return The smallest possible rectangle that will fit around the Sprite Image. */
+    public Rectangle getBoundingBox() {
+        return sprite.getBoundingRectangle();
+    }
 
-	/**
-	 * Wrapper for the Sprite getBoundingRectangle() method.
-	 *
-	 * @return The smallest possible rectangle that will fit around the Sprite Image.
-	 */
-	public Rectangle getBoundingBox() {
-		return sprite.getBoundingRectangle( );
-	}
+    /** @return the sprite's width in world units. */
+    public float getWidth() {
+        return sprite.getWidth();
+    }
 
-	public float getWidth() {
-		return sprite.getWidth( );
-	}
+    /** @return the sprite's height in world units. */
+    public float getHeight() {
+        return sprite.getHeight();
+    }
 
-	public float getHeight() {
-		return sprite.getHeight( );
-	}
-
-	@Override
-	public void dispose() {
-		if ( Global.DEBUG )
-			System.out.println( this.getClass( ).getSimpleName( ) + " disposed" );
-	}
+    /** Sprites are automatically disposed when the go out of scope. */
+    @Override
+    public void dispose() {
+        if ( Global.DEBUG )
+            System.out.println( this.getClass().getSimpleName() + " disposed" );
+    }
 }

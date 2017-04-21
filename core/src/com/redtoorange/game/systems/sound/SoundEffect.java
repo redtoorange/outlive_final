@@ -4,10 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 
 /**
- * SoundEffect.java - DESCRIPTION
+ * SoundEffect.java -
  *
- * @author - Andrew M.
- * @version - 23/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class SoundEffect {
 	private Sound sound;

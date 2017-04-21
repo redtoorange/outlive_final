@@ -1,119 +1,144 @@
 package com.redtoorange.game.components.input;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.redtoorange.game.Global;
 import com.redtoorange.game.gameobject.characters.GameObjectCharacter;
 import com.redtoorange.game.gameobject.characters.enemies.Enemy;
+import com.redtoorange.game.systems.Global;
 
 /**
- * ${FILE_NAME}.java - Description
+ * EnemyInputComponent.java - The input component that will regulate an Enemy's movement.  This will make them roam around
+ * randomly within a small area unless the player is near.  The enemy will begin to persue until the player is outside
+ * of the sensor range.
  *
- * @author
- * @version 27/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
-public class EnemyInputComponent extends InputComponent{
-	private float rotation;
-	private float sensorRange = 10f;
-	private Enemy controlled;
-	float roamDirection = MathUtils.random( 0f, 359f );
-	private float roamingTime = 0;
-	private float roamingDelay = 0;
-	private State currentState = State.ROAMING;
+public class EnemyInputComponent extends InputComponent {
+    private float roamDirection = MathUtils.random( 0f, 359f );
+    private float rotation;
+    private float sensorRange = 10f;
+    private Enemy controlled;
+    private float roamingTime = 0;
+    private float roamingDelay = 0;
+    private State currentState = State.ROAMING;
 
-	private enum State{
-		ROAMING, CHASING
-	}
+    /**
+     * Create a generic enemy input component.  This provides very basic AI for the enemy.
+     *
+     * @param owner       The parent GameObject.
+     * @param sensorRange How far away the player can be sensed.
+     */
+    public EnemyInputComponent( GameObjectCharacter owner, float sensorRange ) {
+        super( owner );
 
-	public EnemyInputComponent( GameObjectCharacter owner, float sensorRange  ) {
-		super( owner );
+        this.controlled = ( Enemy ) owner;
+        this.sensorRange = sensorRange;
+    }
 
-		this.controlled = (Enemy)owner;
-		this.sensorRange = sensorRange;
-	}
+    /**
+     * Called each frame, update the current state of the enemy based on the player's distance.
+     *
+     * @param deltaTime The amount of time since the last update.
+     */
+    @Override
+    public void update( float deltaTime ) {
+        switch ( currentState ) {
+            case ROAMING:
+                romaingAI( deltaTime );
+                break;
+            case CHASING:
+                chasingAI();
+                break;
+        }
+    }
 
-	@Override
-	public void update( float deltaTime ) {
-		switch(currentState){
-			case ROAMING:
-				romaingAI( deltaTime );
-				break;
-			case CHASING:
-				chasingAI();
-				break;
-		}
-	}
+    /** If the enemy is in the CHASE state, the AI will close on the player. */
+    private void chasingAI() {
+        rotateToFacePlayer();
+        calculateDeltaInput();
 
-	private void chasingAI(){
-		rotateToFacePlayer();
-		calculateDeltaInput();
+        if ( !withinRange() ) {
+            resetRoamingTimes();
+            currentState = State.ROAMING;
+        }
+    }
 
+    /**
+     * If the enemy is in the ROAM state, the AI will roam in a random direction, pause there, then turn in a
+     * new direction, and roam there.
+     *
+     * @param deltaTime Time since the last Roaming update.
+     */
+    private void romaingAI( float deltaTime ) {
+        if ( roamingTime > 0 ) {
+            roamingTime -= deltaTime;
+            roamDeltaInput();
+        } else if ( roamingTime <= 0.0f && roamingDelay > 0 ) {
+            roamingDelay -= deltaTime;
+            stopMovement();
+        } else if ( roamingTime <= 0 && roamingDelay <= 0 ) {
+            resetRoamingTimes();
+            applyDirection();
+        }
 
-		if( !withinRange() ) {
-			resetRoamingTimes();
-			currentState = State.ROAMING;
-		}
-	}
+        if ( withinRange() )
+            currentState = State.CHASING;
+    }
 
-	private void romaingAI( float deltaTime ){
-		if( roamingTime > 0 ){
-			roamingTime -= deltaTime;
-			roamDeltaInput();
-		}
-		else if( roamingTime <= 0.0f && roamingDelay > 0){
-			roamingDelay -= deltaTime;
-			stopMovement();
-		}
-		else if(roamingTime <= 0 && roamingDelay <= 0){
-			resetRoamingTimes( );
-			applyDirection();
-		}
+    /** Reset the roaming AI's timers. */
+    private void resetRoamingTimes() {
+        roamingTime = MathUtils.random( 1f, 2f );
+        roamingDelay = MathUtils.random( 0.25f, 1f );
+        roamDirection = MathUtils.random( 0f, 359f );
+        applyDirection();
+    }
 
-		if( withinRange() )
-			currentState = State.CHASING;
-	}
+    /** @return Is the player within the sensor range? */
+    private boolean withinRange() {
+        Vector2 a = controlled.getTransform().getPosition();
+        Vector2 b = controlled.getPlayer().getTransform().getPosition();
+        return sensorRange > Vector2.dst( a.x, a.y, b.x, b.y );
+    }
 
-	private void resetRoamingTimes( ) {
-		roamingTime = MathUtils.random( 1f, 2f );
-		roamingDelay = MathUtils.random( 0.25f, 1f );
-		roamDirection = MathUtils.random( 0f, 359f );
-		applyDirection();
-	}
+    /** Turn to look at the player. */
+    protected void rotateToFacePlayer() {
+        rotation = Global.lookAt(
+                controlled.getTransform().getPosition(),
+                controlled.getPlayer().getTransform().getPosition() );
+        sc.setRotation( rotation );
+    }
 
-	private boolean withinRange( ) {
-		Vector2 a = controlled.getTransform().getPosition();
-		Vector2 b = controlled.getPlayer().getTransform().getPosition();
-		return sensorRange > Vector2.dst( a.x, a.y, b.x, b.y );
-	}
+    /** Calculate how the enemy should move based on it's speed and then rotating that vector to face the player. */
+    protected void calculateDeltaInput() {
+        deltaInput.set( 1, 0 );
+        deltaInput.rotate( rotation );
+    }
 
-	protected void rotateToFacePlayer( ) {
-		rotation = Global.lookAt(
-				controlled.getTransform().getPosition(),
-				controlled.getPlayer().getTransform().getPosition( ) );
-		sc.setRotation( rotation );
-	}
+    /** Change the AI's facing. */
+    protected void applyDirection() {
+        sc.setRotation( roamDirection );
+    }
 
-	protected void calculateDeltaInput( ) {
-		deltaInput.set( 1, 0 );
-		deltaInput.rotate( rotation );
-	}
+    /** Calculate how the enemy should move based on it's speed and then rotating that vector to face the roam direction. */
+    protected void roamDeltaInput() {
+        deltaInput.set( 1, 0 );
+        deltaInput.rotate( roamDirection );
+    }
 
-	protected void applyDirection(){
-		sc.setRotation( roamDirection );
-	}
+    /** Stop all movement, prevent drift. */
+    protected void stopMovement() {
+        deltaInput.set( 0, 0 );
+    }
 
-	protected void roamDeltaInput( ) {
-		deltaInput.set( 1, 0 );
-		deltaInput.rotate( roamDirection );
-	}
+    /** Not used, needs to be implemented. */
+    @Override
+    public void dispose() {
+        //Not Used.
+    }
 
-	protected void stopMovement( ) {
-		deltaInput.set( 0, 0 );
-	}
-
-	@Override
-	public void dispose( ) {
-
-	}
+    /** The states that the Enemy AI can be in. */
+    private enum State {
+        ROAMING, CHASING
+    }
 }

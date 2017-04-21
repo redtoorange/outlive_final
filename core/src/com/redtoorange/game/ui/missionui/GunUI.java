@@ -11,14 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.VisUI;
-import com.redtoorange.game.Global;
+import com.redtoorange.game.systems.Global;
 import com.redtoorange.game.systems.System;
 
 /**
- * GunUI.java - User Interface for the Ammunition counter.
+ * GunUI.java -
  *
- * @author
- * @version 23/Jan/2017
+ * @author Andrew McGuiness
+ * @version 20/Apr/2017
  */
 public class GunUI extends System {
 	private OrthographicCamera uiCamera;
