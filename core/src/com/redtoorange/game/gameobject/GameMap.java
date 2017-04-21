@@ -1,3 +1,23 @@
+/*
+ * Copyright 2017  Andrew James McGuiness
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ *  associated  documentation files (the "Software"), to deal in the Software without restriction,
+ *  including without limitation the  rights to use, copy, modify, merge, publish, distribute, sublicense,
+ *  and/or sell copies of the Software, and to permit   persons to whom the Software is furnished to do
+ *   so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.redtoorange.game.gameobject;
 
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -39,8 +59,10 @@ public class GameMap extends GameObject {
      * Build a GameMap that will encapsulate a Tiled TMX Map.  Scaling is handled automatically.  Two Arrays will be
      * pulled from the TMX Map for object layers name: "walls", "playerspawn".
      *
-     * @param mapPath  the complete path from the Asset folder for the TMX file.
+     * @param parent   The gameObject this is placed under, usually the scene root.
+     * @param mapPath  Rhe complete path from the Asset folder for the TMX file.
      * @param batch    The SpriteBatch to embed into the MapRenderer.
+     * @param camera   The camera that is following the player, this is used for tile occlusion.
      * @param mapScale The amount to resize the entire map by.  1/16f if you want 16 map pixels to equal 1 game unit.
      */
     public GameMap( GameObject parent, String mapPath, SpriteBatch batch, OrthographicCamera camera, float mapScale ) {
