@@ -51,7 +51,7 @@ public class PowerUpPhysicsComponent extends PhysicsComponent {
     @Override
     public void start( GameObject parent ) {
         powerUpGO = parent;
-        initPhysics( parent.getComponent( SpriteComponent.class ) );
+        initPhysics( (SpriteComponent ) parent.getComponent( SpriteComponent.class ) );
     }
 
     /**
